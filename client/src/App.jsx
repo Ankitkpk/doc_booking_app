@@ -11,7 +11,7 @@ function App() {
   return (
     <div>
       <BrowserRouter>
-       <Navbar/>
+       <Navbar className='px-4'/>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -28,3 +28,4 @@ function App() {
 }
 
 export default App;
+

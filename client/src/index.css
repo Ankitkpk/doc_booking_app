@@ -14,3 +14,7 @@
   .sentence-spacing {
     word-spacing: 0.5em;
   }
+
+  .active-link hr {
+    @apply block bg-blue-500; 
+  }

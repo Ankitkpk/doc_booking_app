@@ -2,20 +2,21 @@ import React, { useState, useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { AppContext } from '../context/AppContext.jsx';
 import { assets } from '../assets/assets_frontend/assets.js';
-import RealatedDoctor from '../components/RealatedDoctor.jsx';
+
 
 const Appointment = () => {
   const { doctors } = useContext(AppContext);
   const [doctInfo, setDocInfo] = useState(null);
-  const { docId } = useParams();
+  const { npm } = useParams();
   const [slotIndex ,setSlotIndex]=useState(0);
   const [doctorslot, setDoctorSlot] = useState([]);
   const [slotTime ,  setSlotTime]=useState();
   const daysofWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-
+  console.log(doctors);
   // Fetch Doctor Info
   const fetchDocInfo = async () => {
     const doctor = doctors.find((doc) => doc._id === docId);
+    console.log(doctor);
     setDocInfo(doctor || null);
   };
 

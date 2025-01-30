@@ -3,24 +3,31 @@ import { GoArrowRight } from "react-icons/go";
 
 const Banner = () => {
   return (
-    <div className='flex items-center justify-between bg-blue-500 h-1/2 mx-8 rounded-[15px] p-6'>
-      <div className='flex flex-col items-start justify-center space-y-4 pl-6 w-full'>
-        <p className="font-bold text-4xl sm:text-5xl text-white leading-tight">
-          Book Appointment
-        </p>
-        <p className="font-bold text-4xl sm:text-5xl text-white leading-tight">
-          with 100+ Trusted Doctors
-        </p>
-        <button 
-          href="#speciality" 
-          className="bg-white border border-white text-black font-semibold py-3 px-6 rounded-full flex items-center hover:bg-gray-100 hover:border-gray-200"
+    <div className="flex bg-primary rounded-lg px-6 sm:px-10 md:px-14 lg:px-12 my-20 md:mx-10">
+      {/* Left Section */}
+      <div className="flex-1 py-8 sm:py-10 md:py-16 lg:py-24 lg:pl-5">
+        <div>
+          <p className="text-lg font-semibold">Book Appointments</p>
+          <p className="mt-4 text-xl sm:text-2xl font-bold">
+            With 100+ Trusted Doctors
+          </p>
+        </div>
+        <button
+          className="bg-white text-sm sm:text-base text-gray-600 px-8 py-3 rounded-full mt-6 flex items-center gap-2"
+          aria-label="Create an account"
         >
-          <span>Create Appointment</span>
-          <GoArrowRight className="ml-2" />
+          Create Account
+          <GoArrowRight />
         </button>
       </div>
-      <div className='flex items-center'>
-        <img src={assets.appointment_img} className='p-4 h-3/4 max-w-full object-cover rounded-lg' alt="Appointment" />
+      
+      {/* Right Section */}
+      <div className="hidden md:block md:w-1/2 lg:w-[170px] relative">
+        <img
+          src={assets.appointment_img}
+          alt="Illustration of doctor consultation"
+          className="w-full absolute bottom-0 right-0 max-w-md"
+        />
       </div>
     </div>
   );
