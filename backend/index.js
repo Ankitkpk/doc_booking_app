@@ -3,16 +3,14 @@ import bodyParser from 'body-parser';
 import cors from 'cors'; 
 import connectDB from './mongodb.js'
 import { config } from 'dotenv'; 
+import adminRoutes from './routes/adminRoutes.js'
 import conectcoudinary from './cloudinary.js';
+
 config();
 const app = express();
-
 app.use(bodyParser.json()); 
 app.use(cors()); 
-
-app.get('/', (req, res) => {
-  res.send('Welcome to the Node.js app!');
-});
+app.use('/api/admin',adminRoutes);
 connectDB();
 conectcoudinary();
 const PORT = process.env.PORT || 3000; 

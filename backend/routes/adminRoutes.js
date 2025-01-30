@@ -1,7 +1,9 @@
 import express from 'express';
-const router = express.Router();
-import {addDoctor} from '../controllers/adminController.js'
+import { addDoctor } from '../controllers/adminController.js';
+import upload from '../middleware/multer.js';
 
-router.post('/add-doctor', addDoctor);
+const router = express.Router();  
+
+router.post('/add-doctor', upload.single('doctorImage'), addDoctor);
 
 export default router;

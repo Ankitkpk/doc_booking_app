@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const doctorSchema = new mongoose.Schema(
   {
@@ -36,19 +37,18 @@ const doctorSchema = new mongoose.Schema(
     },
     availability: {
       type: Boolean,
-      required: true,
+   //   required: true,
     },
     address: {
       type: Object,
-      required: true,
     },
     date: {
-      type:Number, // Changed to Date type for proper date handling
+      type: Number,
       required: true,
     },
     slots_books: {
-      type: Object, // Consider specifying the structure of this object for clarity
-      default: {}, // Default is an empty object
+      type: Object,
+      default: {},
     },
   },
   {
@@ -56,8 +56,22 @@ const doctorSchema = new mongoose.Schema(
   }
 );
 
-const Doctor = mongoose.models.doctor || mongoose.model('doctor', doctorSchema);
+doctorSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
 
+  try {
+    const salt = await bcrypt.genSalt(10); 
+    this.password = await bcrypt.hash(this.password, salt); 
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+doctorSchema.methods.comparePassword = async function (enteredPassword) {
+  return bcrypt.compare(enteredPassword, this.password);
+};
+
+const Doctor = mongoose.models.doctor || mongoose.model("doctor", doctorSchema);
 
 export default Doctor;
-;

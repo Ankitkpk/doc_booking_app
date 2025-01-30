@@ -1,11 +1,8 @@
-import express from 'express';
-import Doctor from './models/doctor'; // Assuming the model is in the 'models' folder
-import mongoose from 'mongoose';
+import Doctor from '../models/doctorModel.js'
+import { v2 as cloudinary } from 'cloudinary';
 
 
-
-// POST route to add a new doctor
- const addDoctor = async (req, res) => {  // Mark the function as async
+export const addDoctor = async (req, res) => {
   try {
     const {
       name,
@@ -15,14 +12,35 @@ import mongoose from 'mongoose';
       about,
       fees,
       experience,
-      image,
       availability,
       address,
       date,
       slots_books,
     } = req.body;
+     const imageFile = req.file;
+    console.log('Uploaded file:', imageFile);
+    if (
+      !name ||
+      !email ||
+      !password ||
+      !speciality ||
+      !about ||
+      !fees ||
+      !experience ||
+      !availability ||
+      !address ||
+      !date
+    ) {
+      return res.json({ success: false, message: "All fields are required" });
+    }
 
-    // Create a new doctor instance with the data
+   
+      const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
+        resource_type: "image",
+      });
+      imageUrl = imageUpload.secure_url;
+       console.log(imageUrl);
+   
     const newDoctor = new Doctor({
       name,
       email,
@@ -31,26 +49,18 @@ import mongoose from 'mongoose';
       about,
       fees,
       experience,
-      image,
+      image: imageUrl, 
       availability,
-      address,
+      address, 
       date,
-      slots_books,
+      slots_books: slots_books ? JSON.parse(slots_books) : {},
     });
 
-    // Save the doctor to the database
     await newDoctor.save();
+    res.status(201).json({ success: true, message: "Doctor added successfully", doctor: newDoctor });
 
-    // Send success response
-    res.status(201).json({ message: 'Doctor added successfully', doctor: newDoctor });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error adding doctor', error: error.message });
+    res.status(500).json({ success: false, message: "Error adding doctor", error: error.message });
   }
 };
-
-module.exports = {
-  addDoctor
-};
-
-
