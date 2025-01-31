@@ -14,7 +14,7 @@ const Login = () => {
          if(state == 'Admin'){
           const { data } = await axios.post(BackendUrl +'/api/admin/admin-login',{email,password});
           if(data.success){
-            console.log(data.token);
+            setAToken(data.token);
           }
          }else{
             //call the doctor login api//
