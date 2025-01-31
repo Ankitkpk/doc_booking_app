@@ -5,7 +5,6 @@ const authAdmin = (req, res, next) => {
 
         const atoken = req.headers;
 
-       
         if (!atoken) {
             return res.status(401).json({ success: false, message: "Token required" });
         }
