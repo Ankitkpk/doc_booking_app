@@ -5,13 +5,13 @@ export const DoctorContext = createContext();
 
 const DoctorContextProvider = (props) => {
   const value = {
-    doctors
+    
   };
 
   return (
-    <AppContext.Provider value={value}>
+    <DoctorContext.Provider value={value}>
       {props.children}
-    </AppContext.Provider>
+    </DoctorContext.Provider>
   );
 };
 

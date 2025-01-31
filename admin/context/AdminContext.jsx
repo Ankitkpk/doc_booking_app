@@ -1,18 +1,16 @@
-import React, { createContext } from "react";
-import { doctors } from '../assets/assets_frontend/assets.js';
+import React, { createContext, useState } from "react";
+
 
 export const AdminContext = createContext();
 
-const AdminContextProvider = (props) => {
-  const value = {
-    
-  };
+const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
-  return (
-    <AdminContext.Provider value={value}>
-      {props.children}
-    </AdminContext.Provider>
-  );
+const AdminContextProvider = ({ children }) => {
+  const [AToken, setAToken] = useState("");
+
+  const value = { AToken, setAToken, BackendUrl };
+
+  return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>;
 };
 
 export default AdminContextProvider;

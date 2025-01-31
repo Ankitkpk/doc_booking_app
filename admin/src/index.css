@@ -1,3 +1,18 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+
+*{
+  font-family:Outfit;
+}
+
+::-webkit-scrollbar {
+    @apply:hidden
+  }
+
+  .sentence-spacing {
+    word-spacing: 0.5em;
+  }
+
+  .active-link hr {
+    @apply block bg-blue-500; 
+  }
