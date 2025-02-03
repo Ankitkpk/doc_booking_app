@@ -70,7 +70,7 @@ export const addDoctor = async (req, res) => {
 
 
 export const adminLogin = async (req, res) => {
-  console.log("api");
+
     try {
         const { email, password } = req.body;
         if (!email || !password) {

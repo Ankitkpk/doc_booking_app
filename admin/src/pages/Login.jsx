@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useContext, useState } from 'react';
 import { AdminContext } from '../../context/adminContext';
+import { ToastContainer, toast } from 'react-toastify';
 const Login = () => {
   const [state, setState] = useState('Admin');
   const [email,setEmail]=useState('');
@@ -14,13 +15,17 @@ const Login = () => {
          if(state == 'Admin'){
           const { data } = await axios.post(BackendUrl +'/api/admin/admin-login',{email,password});
           if(data.success){
+            //when browser is reloaded data should not get vanished//
+            localStorage.setItem('Atoken',data.token);
             setAToken(data.token);
+          }else{
+            toast.error(data.message);
           }
          }else{
             //call the doctor login api//
          }
        }catch{
-       console.log(error);
+    
        }
   }
 
