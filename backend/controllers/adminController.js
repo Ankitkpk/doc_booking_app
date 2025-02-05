@@ -93,3 +93,17 @@ export const adminLogin = async (req, res) => {
         return res.status(500).json({ success: false, message: 'Server error', error: error.message });
     }
 };
+
+export const allDoctors = async (req, res) => {
+  try {
+    const doctors = await Doctor.find({}).select('-password');
+    if (!doctors.length) {
+      return res.status(404).json({ success: false, message: "No admin doctors found" });
+    }
+
+    res.status(200).json({ success: true, doctors });
+  } catch (error) {
+    console.error("Error fetching admin doctors:", error);
+    res.status(500).json({ success: false, message: "Error fetching admin doctors", error: error.message });
+  }
+};
