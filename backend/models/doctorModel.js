@@ -37,7 +37,7 @@ const doctorSchema = new mongoose.Schema(
     },
     availability: {
       type: Boolean,
-   //   required: true,
+      required: true,
     },
     address: {
       type: Object,
