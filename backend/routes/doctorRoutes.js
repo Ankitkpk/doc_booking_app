@@ -5,3 +5,5 @@ import express from 'express';
 
 const router = express.Router();  
 router.post('/change-availability/:docId',changeAvailability)
+
+export default router;

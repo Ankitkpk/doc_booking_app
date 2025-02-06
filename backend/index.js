@@ -5,6 +5,7 @@ import connectDB from './mongodb.js'
 import { config } from 'dotenv'; 
 import adminRoutes from './routes/adminRoutes.js'
 import doctorRoutes from './routes/doctorRoutes.js'
+import userRoutes from './routes/userRoutes.js';
 import conectcoudinary from './cloudinary.js';
 
 config();
@@ -13,6 +14,7 @@ app.use(bodyParser.json());
 app.use(cors()); 
 app.use('/api/admin',adminRoutes);
 app.use('/api/doctor',doctorRoutes);
+app.use('/api/user',userRoutes);
 connectDB();
 conectcoudinary();
 const PORT = process.env.PORT || 3000; 
