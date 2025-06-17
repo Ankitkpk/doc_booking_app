@@ -1,20 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Special+Gothic&display=swap');
 
 *{
-  font-family:Outfit;
+  font-family: "Special Gothic", sans-serif;
+  font-weight: 400;
+  font-style: normal; 
 }
 
-::-webkit-scrollbar {
-    @apply:hidden
-  }
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
 
-  .sentence-spacing {
-    word-spacing: 0.5em;
-  }
 
-  .active-link hr {
-    @apply block bg-blue-500; 
-  }
+.scrollbar-hide {
+  -ms-overflow-style: none;  
+  scrollbar-width: none;   
+}
