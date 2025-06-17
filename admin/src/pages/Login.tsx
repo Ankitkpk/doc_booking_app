@@ -45,10 +45,9 @@ const Login = () => {
       className="min-h-[80vh] flex items-center justify-center"
     >
       <div className="flex flex-col gap-4 p-8  min-w-[335px] rounded-lg shadow-lg border border-gray-300 bg-white">
-        <p className="text-xl font-semibold">
-            <p className="text-black"><span className="text-blue-600">{state}</span> Login</p>
-          
-        </p>
+        <div className="text-xl font-semibold text-black">
+       <span className="text-blue-600">{state}</span> Login
+       </div>
 
         <div className="flex flex-col">
           <label
@@ -93,12 +92,23 @@ const Login = () => {
         >
           Login
         </button>
-
-        <p className="text-center text-sm">
-          {state === 'Admin'
-            ? <p>DoctorLogin?<span onClick={()=>setState('Doctor')} className='text-blue-600 cursor-pointer font-medium'>click here</span></p>
-            : <p>AdminLogin?<span  onClick={()=>setState('Admin')} className='text-blue-600 cursor-pointer font-medium'>click here</span></p>}
-        </p>
+     <div className="text-center text-sm">
+  {state === 'Admin' ? (
+    <p>
+      Doctor Login?{' '}
+      <span onClick={() => setState('Doctor')} className="text-blue-600 cursor-pointer font-medium">
+        Click here
+      </span>
+    </p>
+  ) : (
+    <p>
+      Admin Login?{' '}
+      <span onClick={() => setState('Admin')} className="text-blue-600 cursor-pointer font-medium">
+        Click here
+      </span>
+    </p>
+  )}
+</div>
       </div>
     </form>
   );
