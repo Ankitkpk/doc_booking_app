@@ -100,7 +100,7 @@ const adminLogin = async (req: Request, res: Response): Promise<any> => {
 
     
       const token = jwt.sign({ email, password }, secret, {
-        expiresIn: '1h', 
+        
       });
 
       return res.status(200).json({

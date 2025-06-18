@@ -9,7 +9,7 @@ import Sidebar from './components/Sidebar';
 import AddDoctor from './pages/Admin/Adddoctor';
 import Allapointsments from './pages/Admin/Allapointsments';
 import DoctorList from './pages/Admin/DoctorList';
-import Dashboard from './pages/Admin/Dashboar';
+import Dashboard from './pages/Admin/Dashboard';
 
 const App = () => {
   const { token } = useAdminContext();
