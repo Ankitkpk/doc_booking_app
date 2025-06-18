@@ -20,7 +20,7 @@ const AddDoctor: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [experience, setExperience] = useState('1 year');
+  const [expirence, setExpirence] = useState('1 year');
   const [fees, setFees] = useState('');
   const [speciality, setSpeciality] = useState('');
   const [education, setEducation] = useState('');
@@ -28,7 +28,7 @@ const AddDoctor: React.FC = () => {
   const [address2, setAddress2] = useState('');
   const [about, setAbout] = useState('');
 
-  const {BackendUrl,setToken}=useAdminContext();
+  const {BackendUrl,token}=useAdminContext();
 
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -44,22 +44,23 @@ const AddDoctor: React.FC = () => {
     formData.append('name', name);
     formData.append('email', email);
     formData.append('password', password);
-    formData.append('experience', experience);
+    formData.append('expirence', expirence);
     formData.append('fees', fees.toString());
-    formData.append('education', education);
+    formData.append('degree', education)
     formData.append('speciality', speciality);
     formData.append('address', JSON.stringify({ line1: address1, line2: address2 }));
     formData.append('about', about);
 
     const response = await axios.post<DoctorRegisterResponse>(
-      `${BackendUrl}/api/doctor/doctorRegister`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
+  `${BackendUrl}/api/admin/doctorRegister`,
+  formData,
+  {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+       Authorization: `Bearer ${token}`,
+    },
+  }
+);
 
     if (response.data.success) {
       toast.success(response.data.message || "Doctor registered successfully");
@@ -67,7 +68,7 @@ const AddDoctor: React.FC = () => {
       setEmail('');
       setPassword('');
       setDocImg(null);
-      setExperience('');
+      setExpirence('');
       setFees('');
       setSpeciality('');
       setEducation('');
@@ -148,19 +149,21 @@ const AddDoctor: React.FC = () => {
               <select
                 id="experience"
                 className={inputClass}
-                value={experience}
-                onChange={(e) => setExperience(e.target.value)}
+                value={expirence}
+                onChange={(e) => setExpirence(e.target.value)}
               >
                 <option value="">Select experience</option>
                 <option value="1">1 Year</option>
                 <option value="2">2 Years</option>
                 <option value="3">3+ Years</option>
+                <option value="3">4+ Years</option>
+                <option value="3">6+ Years</option>
               </select>
             </div>
             <div>
               <p className="mb-1 font-medium">Fees</p>
               <input
-                type="number"
+                type="text"
                 placeholder="Fees"
                 className={inputClass}
                 value={fees}
@@ -225,7 +228,7 @@ const AddDoctor: React.FC = () => {
         <div className="text-center">
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 transition text-white px-6 py-3 rounded-lg shadow"
+            className="flex items-start bg-blue-600 hover:bg-blue-700 transition text-white px-6 py-3 rounded-lg shadow"
           >
             Add Doctor
           </button>
