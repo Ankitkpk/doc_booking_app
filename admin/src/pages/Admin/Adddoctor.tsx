@@ -28,7 +28,7 @@ const AddDoctor: React.FC = () => {
   const [address2, setAddress2] = useState('');
   const [about, setAbout] = useState('');
 
-  const {BackendUrl,token}=useAdminContext();
+  const {BackendUrl,token,setDoctors}=useAdminContext();
 
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -64,6 +64,7 @@ const AddDoctor: React.FC = () => {
 
     if (response.data.success) {
       toast.success(response.data.message || "Doctor registered successfully");
+      setDoctors(response.data.doctor);
       setName('');
       setEmail('');
       setPassword('');
@@ -156,8 +157,8 @@ const AddDoctor: React.FC = () => {
                 <option value="1">1 Year</option>
                 <option value="2">2 Years</option>
                 <option value="3">3+ Years</option>
-                <option value="3">4+ Years</option>
-                <option value="3">6+ Years</option>
+                <option value="4">4+ Years</option>
+                <option value="5">5+ Years</option>
               </select>
             </div>
             <div>

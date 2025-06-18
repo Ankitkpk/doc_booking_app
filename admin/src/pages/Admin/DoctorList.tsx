@@ -17,8 +17,8 @@ const DoctorList: React.FC = () => {
   }
 
   return (
-    <div className="p-6">
-      <p className="text-2xl font-semibold mb-6 text-gray-800">All Doctors</p>
+    <div className="p-4 w-full min-h-screen bg-gray-100 ">
+      <p className="text-2xl font-semibold mb-6 px-2 text-gray-800">All Doctors</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mx-6 w-full py-9 lg:grid-cols-5 gap-6">
         {doctors.slice(0, 10).map((doctor) => (
           <div

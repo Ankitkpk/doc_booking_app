@@ -77,11 +77,11 @@ const AdminContextProvider: React.FC<AdminContextProviderProps> = ({ children })
 
       toast.success(response.data.message);
 
-      /*   setDoctors((prevDoctors) =>
+        setDoctors((prevDoctors) =>
         prevDoctors.map((doc) =>
           doc._id === docId ? { ...doc, available: !doc.available } : doc
         ) 
-      ); */
+      );
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to change availability");
     }

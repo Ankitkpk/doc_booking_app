@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
+import { useAppContext } from '../hooks/useAppcontext';
 
 const SPECIALITIES = [
   'General physician',
@@ -13,7 +14,7 @@ const SPECIALITIES = [
 
 const Doctors: React.FC = () => {
   const { speciality } = useParams();
-  const { doctors } = useContext(AppContext)!;
+  const { doctors } = useAppContext();
   const [filterDoc, setFilterDoc] = useState<typeof doctors>([]);
   const navigate = useNavigate();
 

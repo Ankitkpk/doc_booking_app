@@ -6,7 +6,7 @@ import Doctor from "../models/doctor";
 const getAllDoctors = async (req: Request, res: Response): Promise<any> => {
   try {
 
-    const doctors = await Doctor.find({});
+    const doctors = await Doctor.find({}).select(['-password' , '-email']);
 
     res.status(201).json({
       success: true,

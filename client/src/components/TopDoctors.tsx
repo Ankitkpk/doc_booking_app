@@ -1,8 +1,10 @@
-import React from 'react';
-import { doctors } from '../assets/assets_frontend/assets';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '../hooks/useAppcontext';
 
 const TopDoctors: React.FC = () => {
+  const {doctors}=useAppContext();
+  console.log(doctors);
   const navigate=useNavigate();
   return (
     <div className="text-center py-10">
