@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { useAdminContext } from '../hooks/useAdminContext';
+import { toast } from 'react-toastify';
 
 
 interface AdminLoginResponse
@@ -27,10 +28,12 @@ const Login = () => {
     );
 
     if (response.data.success) {
+      //store the token in localstorage//
+      localStorage.setItem('token',response.data.token);
       setToken(response.data.token);
-      console.log(response.data.message);
+      toast.success("Login success");
     } else {
-      alert('Login failed');
+      toast.error("invalid credentials")
     }
   } catch (error) {
     console.error('Login error:', error);

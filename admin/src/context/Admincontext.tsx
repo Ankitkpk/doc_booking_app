@@ -17,7 +17,7 @@ interface AdminContextProviderProps {
 
 const BackendUrl = import.meta.env.VITE_BACKEND_URL as string;
 const AdminContextProvider: React.FC<AdminContextProviderProps> = ({ children }) => {
-  const [token, setToken] = useState<string>('');
+  const [token, setToken] = useState<string>(()=> localStorage.getItem('token') || '');
 
   const value: AdminContextType = {
     token,
