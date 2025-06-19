@@ -2,14 +2,22 @@ import React, { useState } from 'react';
 import { NavLink,useNavigate } from 'react-router-dom';
 import { assets } from '../assets/assets_frontend/assets';
 import { Menu, X } from 'lucide-react';
+import { toast } from 'react-toastify';
+import { useAppContext } from '../hooks/useAppcontext';
 
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [token, setToken] = useState(false);
+  const {token , setToken}=useAppContext();
   const navigate=useNavigate();
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
-
+  const Logout = () => {
+  setToken('');
+  localStorage.removeItem('atoken');
+  toast.success('Logged out successfully!');
+  setMenuOpen(false); 
+  navigate('/login');
+};
   return (
     <nav className="bg-white px-4 py-4 md:px-4 md:py-6">
       <div className="flex justify-between items-center">
@@ -65,12 +73,12 @@ const Navbar: React.FC = () => {
             <div className='flex flex-col item-center gap-1 min-w-48'>
             <p  onClick={()=>navigate('/profile')}className="hover:bg-gray-100 px-3 py-2 rounded-md cursor-pointer">My Profile</p>
             <p onClick={()=>navigate('/my-appointments')} className="hover:bg-gray-100 px-3 py-2 rounded-md cursor-pointer">My Appointments</p>
-            <p onClick={()=>navigate('/my-appointments')}  className="hover:bg-gray-100 px-3 py-2 rounded-md cursor-pointer">Logout</p>
+            <p onClick={()=>Logout()}  className="hover:bg-gray-100 px-3 py-2 rounded-md cursor-pointer">Logout</p>
             </div>
           </div>
          </div>
        ) : (
-        <button className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">
+        <button onClick={()=>navigate('/login')} className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">
         Login
        </button>
         )}
@@ -128,7 +136,7 @@ const Navbar: React.FC = () => {
         <div>
          <p className="hover:bg-gray-100 px-3 py-2 rounded-md cursor-pointer">My Profile</p>
          <p className="hover:bg-gray-100 px-3 py-2 rounded-md cursor-pointer">My Appointments</p>
-         <p className="hover:bg-gray-100 px-3 py-2 rounded-md cursor-pointer">Logout</p>
+         <p onClick={()=>Logout()} className="hover:bg-gray-100 px-3 py-2 rounded-md cursor-pointer">Logout</p>
         </div>
         </div>
          </div>

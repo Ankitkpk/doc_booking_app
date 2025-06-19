@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import Home from './pages/Home';
 import Doctors from './pages/Doctors';
 import Contact from './pages/Contact';
@@ -15,6 +16,7 @@ const App = () => {
   return (
     
     <div className='mx-4 sm:mx-[10%]'>
+      <ToastContainer/>
         <BrowserRouter>
          <Navbar/>
         <Routes>
@@ -22,7 +24,7 @@ const App = () => {
           <Route path='/doctors/:speciality' element={<Doctors/>}/>
           <Route path='/alldoctors' element={<Doctors/>}/>
           <Route path='/contact' element={<Contact/>}/>
-          <Route path='/Login' element={<Login/>}/>
+          <Route path='/login' element={<Login/>}/>
           <Route path='/About' element={<About/>}/>
           <Route path='/my-appointments' element={<MyAppointment/>}/>
           <Route path='/appointment/:docId' element={<Appointments/>}/>

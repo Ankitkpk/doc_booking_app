@@ -22,6 +22,9 @@ interface DoctorResponse {
 interface AppContextType {
   doctors: Doctor[];
   setDoctors: React.Dispatch<React.SetStateAction<Doctor[]>>;
+   token:string,
+  setToken:React.Dispatch<React.SetStateAction<string>>,
+ 
   BackendUrl: string;
 }
 
@@ -32,7 +35,16 @@ export const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [token ,setToken]=useState<string>(()=>localStorage.getItem('atoken') || '')
   const BackendUrl = import.meta.env.VITE_BACKEND_URL as string;
+    const value: AppContextType = {
+    token,
+    setToken,
+    doctors,
+    setDoctors,
+    BackendUrl,
+  };
+
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -48,14 +60,7 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
 
     fetchDoctors();
   }, []);
- console.log(doctors);
-  const value: AppContextType = {
-    doctors,
-    setDoctors,
-    BackendUrl,
-  };
-
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+ return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
 export default AppContextProvider;

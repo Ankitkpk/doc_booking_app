@@ -1,16 +1,64 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useAppContext } from '../hooks/useAppcontext';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
+
+interface userLoginresponse {
+  success: boolean;
+  token: string;
+  message: string;
+}
 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const { token, setToken, BackendUrl } = useAppContext();
   const [state, setState] = useState<'Sign Up' | 'Login'>('Sign Up');
 
   const onSubmitHandler = async (event: React.FormEvent) => {
     event.preventDefault();
-    const userData = { name, email, password };
-    console.log(`${state} with`, userData);
+
+    try {
+      if (state === 'Sign Up') {
+        const response = await axios.post<userLoginresponse>(`${BackendUrl}/api/user/registerUser`, {
+          name,
+          email,
+          password,
+        });
+
+        if (response.data.success) {
+          setToken(response.data.token);
+          localStorage.setItem('atoken', response.data.token);
+          toast.success("Account created successfully!");
+        }
+      } else {
+        const response = await axios.post<userLoginresponse>(`${BackendUrl}/api/user/LoginUser`, {
+          email,
+          password,
+        });
+
+        if (response.data.success) {
+          setToken(response.data.token);
+          localStorage.setItem('atoken', response.data.token);
+          toast.success("Login successful!");
+        }
+      }
+    } catch (error: any) {
+      const msg = error.response?.data?.message || "Something went wrong!";
+      toast.error(msg);
+      console.error("Auth error:", msg);
+    }
   };
+
+  useEffect(() => {
+    if (token) {
+      navigate('/'); 
+    }
+  }, [token]);
 
   return (
     <form onSubmit={onSubmitHandler} className="min-h-[80vh] flex flex-col justify-center items-center p-6 gap-4">
@@ -66,7 +114,7 @@ const Login: React.FC = () => {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-600 transition"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
         >
           {state}
         </button>
@@ -81,6 +129,8 @@ const Login: React.FC = () => {
           </span>
         </p>
       </div>
+
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
     </form>
   );
 };

@@ -4,6 +4,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import adminRoutes from './routes/adminRoutes';
 import doctorRoutes from './routes/doctorRoutes';
+import userRoutes from './routes/userRoutes';
 import { v2 as cloudinary } from "cloudinary";
 
 mongoose
@@ -25,6 +26,7 @@ app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }));
 app.use(express.json());
 app.use('/api/admin',adminRoutes);
 app.use('/api/doctor',doctorRoutes);
+app.use('/api/user',userRoutes);
 app.get("/health", async (req: Request, res: Response) => {
   res.send({ message: "health OK!" });
 });
