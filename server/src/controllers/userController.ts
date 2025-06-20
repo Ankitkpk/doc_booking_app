@@ -7,7 +7,7 @@ import Appointment from "../models/appointment";
 import mongoose from "mongoose";
 import uploadImageOnCloudinary from "../../utils/uploadImageCloudinary";
 import { CloudinaryUploadResponse } from '../../utils/uploadImageCloudinary'; 
-import Doctor from "../models/doctor";
+import Doctor, { DoctorDocument } from "../models/doctor";
 
 const registerUser = async (req: Request, res: Response): Promise<any> => {
   try {
@@ -160,55 +160,73 @@ const updateProfile = async (req: Request, res: Response): Promise<any> => {
 };
 
 
+
 export const BookAppointment = async (req: Request, res: Response): Promise<any> => {
   try {
     const { docId, userId, slotTime, slotDate } = req.body;
 
+    // Validate input
     if (!docId || !userId || !slotTime || !slotDate) {
       return res.status(400).json({ success: false, message: "All fields are required." });
     }
 
-    const doctorData = await Doctor.findById(docId).select('-password');
-    const amount = doctorData?.fees;
+    // Fetch doctor
+    const doctorData = await Doctor.findById(docId).select('-password') as DoctorDocument;
+    if (!doctorData) {
+      return res.status(404).json({ success: false, message: "Doctor not found." });
+    }
 
-    if (!doctorData?.available) {
+    if (!doctorData.available) {
       return res.status(409).json({ success: false, message: "Doctor is not available for booking." });
     }
 
-    // ✅ Check if the slot is already booked
-    const isSlotAlreadyBooked = doctorData.slots_booked.some(
-      (slot: any) => slot.slotDate === slotDate && slot.slotTime === slotTime
-    );
-
-    if (isSlotAlreadyBooked) {
-      return res.status(409).json({ success: false, message: "Slot is already booked." });
+    // Ensure slots_booked exists as object
+    if (!doctorData.slots_booked) {
+      doctorData.slots_booked = {};
     }
 
+    // Check if slot already booked
+    if (
+      doctorData.slots_booked[slotDate] &&
+      doctorData.slots_booked[slotDate].includes(slotTime)
+    ) {
+      return res.status(409).json({ success: false, message: "Slot time is already booked." });
+    }
+
+    // Push new slot
+    if (!doctorData.slots_booked[slotDate]) {
+      doctorData.slots_booked[slotDate] = [];
+    }
+    doctorData.slots_booked[slotDate].push(slotTime);
+
+    // Fetch user
     const userData = await User.findById(userId).select('-password');
+    if (!userData) {
+      return res.status(404).json({ success: false, message: "User not found." });
+    }
 
-    // Remove slots_booked from doctorData before saving into appointment (to avoid old state)
-    const doctorClone = { ...doctorData.toObject() };
-    delete doctorClone.slots_booked;
+    const amount = doctorData.fees;
 
+    // Prepare doctor copy for appointment
+    const doctorDataForAppointment = doctorData.toObject();
+    delete (doctorDataForAppointment as Record<string, any>).slots_booked;
+
+    // Save appointment
     const appointment = new Appointment({
       docId: new mongoose.Types.ObjectId(docId),
       userId: new mongoose.Types.ObjectId(userId),
       slotTime,
       slotDate,
       userData,
-      doctorData: doctorClone,
+      doctorData: doctorDataForAppointment,
       amount,
       date: Date.now()
     });
 
     await appointment.save();
 
-    //Add the new slot to the slots_booked array
-    await Doctor.findByIdAndUpdate(docId, {
-      $push: {
-        slots_booked: { slotDate, slotTime }
-      }
-    });
+    // Save updated doctor with new slot
+    await doctorData.save();
 
     return res.status(201).json({
       success: true,
@@ -221,7 +239,6 @@ export const BookAppointment = async (req: Request, res: Response): Promise<any>
     return res.status(500).json({ success: false, message: "Server error." });
   }
 };
-
 
 
 export default { registerUser, LoginUser, getUserProfile, updateProfile,BookAppointment };
