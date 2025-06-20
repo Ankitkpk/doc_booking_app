@@ -106,31 +106,31 @@ const getUserProfile = async (req: Request, res: Response): Promise<any> => {
 
 const updateProfile = async (req: Request, res: Response): Promise<any> => {
   try {
-    const { name, address, phone, gender } = req.body;
+    const { name, address, phone, gender,dob } = req.body;
     const userId = req.userId;
     const userImage = (req.file as Express.Multer.File)?.path || null;
 
-     if (!name || !address || !phone || !gender) {
+    if (!name || !address || !phone || !gender) {
       return res.status(400).json({ success: false, message: "All fields are required." });
     }
 
-    if (!userImage) {
-      return res.status(400).json({ success: false, message: "Profile image is required." });
+    let updatedFields: any = {
+      name,
+      address:address,
+      phone,
+      gender,
+      dob
+    };
+
+    if (userImage) {
+      const uploadedAvatar = await uploadImageOnCloudinary(userImage);
+      updatedFields.image = (uploadedAvatar as CloudinaryUploadResponse).secure_url;
     }
 
-    const uploadedAvatar = await uploadImageOnCloudinary(userImage);
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      {
-        name,
-        address: JSON.parse(address),
-        phone,
-        gender,
-        image: (uploadedAvatar as CloudinaryUploadResponse).secure_url
-      },
-      { new: true }
-    ).select("-password");
+    const updatedUser = await User.findByIdAndUpdate(userId, updatedFields, {
+      new: true,
+    }).select("-password");
 
     if (!updatedUser) {
       return res.status(404).json({ success: false, message: "User not found." });
@@ -139,14 +139,23 @@ const updateProfile = async (req: Request, res: Response): Promise<any> => {
     return res.status(200).json({
       success: true,
       message: "Profile updated successfully.",
-      user: updatedUser,
+      user:{
+    _id: updatedUser._id,
+    name: updatedUser.name,
+    email: updatedUser.email,
+    phone: updatedUser.phone,
+    gender: updatedUser.gender,
+    dob: updatedUser.dob,
+    image: updatedUser.image,
+    address: updatedUser.address,
+      }
     });
-
   } catch (error) {
     console.error("Update profile error:", error);
     return res.status(500).json({ success: false, message: "Server error." });
   }
 };
+
 
 
 export default { registerUser, LoginUser, getUserProfile, updateProfile };

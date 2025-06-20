@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      default: "", 
+      default: "https://i.pravatar.cc/150?img=3", 
     },
     gender: {
       type: String,
