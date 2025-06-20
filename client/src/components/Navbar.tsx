@@ -8,6 +8,7 @@ import { useAppContext } from '../hooks/useAppcontext';
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const {token , setToken}=useAppContext();
+  const {userData}=useAppContext();
   const navigate=useNavigate();
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
@@ -65,9 +66,9 @@ const Navbar: React.FC = () => {
           </li>
         </ul>
         <div className="hidden md:block">
-         {token ? (
+         {token && userData ? (
           <div className='flex items-center gap-2 cursor-pointer group relative'>
-          <img className='w-8 h-8 rounded-full object-cover' src={assets.profile_pic} alt="Profile" />
+          <img className='w-8 h-8 rounded-full object-cover' src={userData.image} alt="Profile" />
           <img className='w-2.5' src={assets.dropdown_icon} alt="Dropdown Icon" />
           <div className="absolute top-10 right-0 font-medium text-gray-600 bg-gray-100 pt-14 text-base z-20 hidden group-hover:block">
             <div className='flex flex-col item-center gap-1 min-w-48'>
@@ -128,9 +129,9 @@ const Navbar: React.FC = () => {
             Contact
           </NavLink>
 
-          {token ? (
+          {token  && userData ?  (
           <div className='flex items-center justify-center gap-2 cursor-pointer'>
-          <img className='w-8 h-8 rounded-full object-cover' src={assets.profile_pic} alt="Profile" />
+          <img className='w-8 h-8 rounded-full object-cover' src={userData.image} alt="Profile" />
           <img className='w-2.5' src={assets.dropdown_icon} alt="Dropdown Icon" />
           <div  className="absolute top-0 right-0 font-medium text-gray-600 pt-14 text-base z-20 hidden group-hover:block">
         <div>

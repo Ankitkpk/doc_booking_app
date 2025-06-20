@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAppContext } from '../hooks/useAppcontext';
 import axios from 'axios';
 import { assets } from '../assets/assets_frontend/assets';
+import { toast } from 'react-toastify';
 
 
 interface UpdateProfileResponse {
@@ -75,10 +76,10 @@ const Profile: React.FC = () => {
         setUserData(res.data.user);
         setIsEdit(false);
         setImage(null);
-        console.log('Saved Data:', res.data.user);
+        toast.success(res.data.message);
       }
     } catch (err) {
-      console.error('Error updating profile:', err);
+      toast.error(err);
     }
   };
 
@@ -96,7 +97,6 @@ const Profile: React.FC = () => {
               <img
                 src={image ? '' : assets.upload_icon}
                 alt=""
-              
               />
             </div>
             <input
@@ -228,7 +228,7 @@ const Profile: React.FC = () => {
             className="px-4 py-2 rounded-full border border-black text-black hover:bg-black hover:text-white transition"
             onClick={() => {
               setIsEdit(!isEdit);
-              if (!isEdit) setImage(null); // clear image on cancel
+              if (!isEdit) setImage(null); 
             }}
           >
             {isEdit ? 'Cancel' : 'Edit'}
