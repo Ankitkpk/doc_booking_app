@@ -8,6 +8,7 @@ interface Doctor {
   name: string;
   image: string;
   available: boolean;
+  slots_booked: Record<string, string[]>;
   speciality: string;
 }
 
@@ -99,6 +100,21 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
     }); 
   }
 };
+useEffect(() => {
+  const fetchDoctors = async () => {
+    try {
+      const response = await axios.get<DoctorResponse>(`${BackendUrl}/api/doctor/getAllDoctors`);
+      if (response.data.success && Array.isArray(response.data.doctors)) {
+        setDoctors(response.data.doctors);
+      }
+    } catch (error) {
+      console.error('Error fetching doctors:', error);
+    }
+  };
+
+  fetchDoctors();
+}, [BackendUrl]);
+
 
   const value: AppContextType = {
     doctors,
@@ -111,21 +127,7 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => 
     getUserProfileData,
   };
 
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const response = await axios.get<DoctorResponse>(`${BackendUrl}/api/doctor/getAllDoctors`);
-        if (response.data.success && Array.isArray(response.data.doctors)) {
-          setDoctors(response.data.doctors);
-        }
-      } catch (error) {
-        console.error('Error fetching doctors:', error);
-      }
-    };
-
-    fetchDoctors();
-  }, [BackendUrl]);
-
+  
 useEffect(() => {
   if (token) {
     getUserProfileData();

@@ -10,6 +10,7 @@ router.post('/LoginUser',userController.LoginUser);
 router.get('/getUserProfile',authUser,userController.getUserProfile);
 router.post('/updateProfile', authUser, upload.single('image'),userController.updateProfile)
 router.post('/BookAppointment',authUser,userController.BookAppointment);
+router.get('/getAppointments',authUser,userController.getAppointments);
 
 
 export default router;

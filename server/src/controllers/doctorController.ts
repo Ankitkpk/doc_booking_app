@@ -66,3 +66,4 @@ export const changeAvailability = async (req: Request, res: Response): Promise<a
 export default { getAllDoctors,changeAvailability};
 
 
+ 

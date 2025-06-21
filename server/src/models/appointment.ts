@@ -33,8 +33,7 @@ const appointmentSchema = new mongoose.Schema(
       required:true
     },
     date:{
-        type:Number,
-        default:Date.now()
+        type:Date,
     },
     payment:{
         type:Boolean,
@@ -55,5 +54,5 @@ const appointmentSchema = new mongoose.Schema(
   }
 );
 
-const User = mongoose.model("Appointment",appointmentSchema);
-export default User;
+const Appointment = mongoose.model("Appointment",appointmentSchema);
+export default Appointment;

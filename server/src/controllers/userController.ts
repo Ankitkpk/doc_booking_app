@@ -163,8 +163,8 @@ const updateProfile = async (req: Request, res: Response): Promise<any> => {
 
 export const BookAppointment = async (req: Request, res: Response): Promise<any> => {
   try {
-    const { docId, userId, slotTime, slotDate } = req.body;
-
+    const { docId, slotTime, slotDate } = req.body;
+    const userId=req.userId;
     // Validate input
     if (!docId || !userId || !slotTime || !slotDate) {
       return res.status(400).json({ success: false, message: "All fields are required." });
@@ -180,25 +180,24 @@ export const BookAppointment = async (req: Request, res: Response): Promise<any>
       return res.status(409).json({ success: false, message: "Doctor is not available for booking." });
     }
 
-    // Ensure slots_booked exists as object
-    if (!doctorData.slots_booked) {
-      doctorData.slots_booked = {};
-    }
-
+    let slots_booked=doctorData.slots_booked;
+   
     // Check if slot already booked
-    if (
-      doctorData.slots_booked[slotDate] &&
-      doctorData.slots_booked[slotDate].includes(slotTime)
-    ) {
+    if (slots_booked[slotDate]) {
+       
+      if(doctorData.slots_booked[slotDate].includes(slotTime)){
       return res.status(409).json({ success: false, message: "Slot time is already booked." });
+      }else{
+       doctorData.slots_booked[slotDate].push(slotTime);
+      }
+    }else{
+      doctorData.slots_booked[slotDate] = [slotTime];
     }
+    
+  // Save updated doctor with new slot
+   doctorData.markModified('slots_booked');
 
-    // Push new slot
-    if (!doctorData.slots_booked[slotDate]) {
-      doctorData.slots_booked[slotDate] = [];
-    }
-    doctorData.slots_booked[slotDate].push(slotTime);
-
+    await doctorData.save();
     // Fetch user
     const userData = await User.findById(userId).select('-password');
     if (!userData) {
@@ -210,7 +209,7 @@ export const BookAppointment = async (req: Request, res: Response): Promise<any>
     // Prepare doctor copy for appointment
     const doctorDataForAppointment = doctorData.toObject();
     delete (doctorDataForAppointment as Record<string, any>).slots_booked;
-
+   //And you still want doctorData.slots_booked in MongoDB to be preserved (which it is — because you’re not deleting from doctorData, only from the toObject() copy)//
     // Save appointment
     const appointment = new Appointment({
       docId: new mongoose.Types.ObjectId(docId),
@@ -225,9 +224,6 @@ export const BookAppointment = async (req: Request, res: Response): Promise<any>
 
     await appointment.save();
 
-    // Save updated doctor with new slot
-    await doctorData.save();
-
     return res.status(201).json({
       success: true,
       message: "Appointment booked successfully.",
@@ -240,5 +236,27 @@ export const BookAppointment = async (req: Request, res: Response): Promise<any>
   }
 };
 
+export const getAppointments = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const userId = req.userId;
+    console.log(userId);
+    if (!userId) {
+      return res.status(400).json({ success: false, message: 'User ID is required' });
+    }
 
-export default { registerUser, LoginUser, getUserProfile, updateProfile,BookAppointment };
+    const appointments = await Appointment.find({ userId })
+      .populate({
+        path:'docId',
+        select:'-password'
+      }) 
+      .sort({date:-1})
+
+    res.status(200).json({ success: true, appointments });
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
+
+
+export default { registerUser, LoginUser, getUserProfile, updateProfile,BookAppointment,getAppointments};
