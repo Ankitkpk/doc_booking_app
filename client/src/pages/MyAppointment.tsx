@@ -52,6 +52,16 @@ const AppointmentCard: React.FC<{
 const MyAppointment: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const { BackendUrl, token } = useAppContext();
+  //month index always start from zero//
+  const months=["","JAN","FEB","MARCH","APR","MAY","JUN","JULY","AUG","SEP","OCT","NOV","DEC"];
+
+  const SlotDateformatted=(slotDate:string,slotTime:string):string=>{
+    let dateArray=slotDate.split('_');
+    let year=dateArray[0];
+    let monthIndex=Number(dateArray[1]);
+    let day=dateArray[2];
+    return year + "  " + months[monthIndex] + " " + day + " " + " At " + slotTime;
+  }
 
   const MyAppointments = async () => {
     try {
@@ -91,7 +101,7 @@ const MyAppointment: React.FC = () => {
               doctor={appt.docId.name}
               specialty={appt.docId.speciality}
               address={`${appt.docId.address.line1}, ${appt.docId.address.line2}`}
-              dateTime={`${appt.slotDate} at ${appt.slotTime}`}
+              dateTime={SlotDateformatted(appt.slotDate,appt.slotTime)}
               image={appt.docId.image}
             />
             <hr className="mt-2 border-t border-gray-300" />

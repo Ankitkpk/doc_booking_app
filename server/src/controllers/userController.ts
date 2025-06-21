@@ -239,7 +239,6 @@ export const BookAppointment = async (req: Request, res: Response): Promise<any>
 export const getAppointments = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = req.userId;
-    console.log(userId);
     if (!userId) {
       return res.status(400).json({ success: false, message: 'User ID is required' });
     }
@@ -257,6 +256,45 @@ export const getAppointments = async (req: Request, res: Response): Promise<any>
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
+
+
+const cancelAppointment = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const userId = req.userId;
+    const { appointmentId } = req.body;
+
+    if (!appointmentId) {
+      return res.status(400).json({ success: false, message: "Appointment ID is required." });
+    }
+
+    const appointment = await Appointment.findById(appointmentId);
+    if (!appointment) {
+      return res.status(404).json({ success: false, message: "Appointment not found." });
+    }
+
+    if (appointment.userId.toString() !== userId) {
+      return res.status(403).json({ success: false, message: "You are not authorized to cancel this appointment." });
+    }
+
+    // Mark appointment as cancelled
+    appointment.isCancelled = true;
+    await appointment.save();
+
+    // Free the booked slot in doctor's document
+    const { docId, slotDate, slotTime } = appointment;
+   
+    await Doctor.findByIdAndUpdate(docId, {
+      $pull: { [`slots_booked.${slotDate}`]: slotTime }
+    });
+
+    return res.status(200).json({ success: true, message: "Appointment cancelled successfully." });
+
+  } catch (error) {
+    console.error("Error cancelling appointment:", error);
+    return res.status(500).json({ success: false, message: "Something went wrong." });
+  }
+};
+
 
 
 export default { registerUser, LoginUser, getUserProfile, updateProfile,BookAppointment,getAppointments};
