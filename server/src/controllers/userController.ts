@@ -247,7 +247,7 @@ export const getAppointments = async (req: Request, res: Response): Promise<any>
     const appointments = await Appointment.find({ userId })
       .populate({
         path:'docId',
-        select:'-password'
+        select:'image name speciality address createdAt'
       }) 
       .sort({date:-1})
 
