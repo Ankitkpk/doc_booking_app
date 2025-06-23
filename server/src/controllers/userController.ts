@@ -280,11 +280,11 @@ const cancelAppointment = async (req: Request, res: Response): Promise<any> => {
     appointment.isCancelled = true;
     await appointment.save();
 
-    // Free the booked slot in doctor's document
+    // Free the booked slot in doctor's document once appointment is cancelled//
     const { docId, slotDate, slotTime } = appointment;
    
     await Doctor.findByIdAndUpdate(docId, {
-      $pull: { [`slots_booked.${slotDate}`]: slotTime }
+      $pull:{ [`slots_booked.${slotDate}`]: slotTime }
     });
 
     return res.status(200).json({ success: true, message: "Appointment cancelled successfully." });
@@ -297,4 +297,4 @@ const cancelAppointment = async (req: Request, res: Response): Promise<any> => {
 
 
 
-export default { registerUser, LoginUser, getUserProfile, updateProfile,BookAppointment,getAppointments};
+export default { registerUser, LoginUser, getUserProfile, updateProfile,BookAppointment,getAppointments,cancelAppointment};

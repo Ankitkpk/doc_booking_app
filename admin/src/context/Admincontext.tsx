@@ -8,7 +8,10 @@ interface AdminContextType {
   setToken: React.Dispatch<React.SetStateAction<string>>;
   BackendUrl: string;
   changeAvailability: (docId: string) => Promise<void>;
+  getAdminappointments:()=>Promise<void>;
   doctors: Doctor[];
+  appointments:Appointment[];
+  setAppointments: React.Dispatch<React.SetStateAction<Appointment[]>>;
   setDoctors: React.Dispatch<React.SetStateAction<Doctor[]>>;
   loading: boolean;
 }
@@ -17,6 +20,16 @@ interface ChangeAvailabilityResponse {
   success: boolean;
   message: string;
 }
+interface Appointment {
+  _id: string;
+  slotTime: string;
+  slotDate: string;
+  userData: Record<string, any>; 
+  doctorData: Record<string, any>; 
+  isCancelled:boolean;
+  amount: string;
+  date: string;
+}
 
 interface Doctor {
   _id: string;
@@ -24,6 +37,25 @@ interface Doctor {
   image: string;
   available: boolean;
   speciality: string;
+}
+interface AppointmentRequest {
+  message: string;
+  success: boolean;
+  appointments: {
+    slotTime: string;
+    slotDate: string;
+    userData: Record<string, any>;
+    doctorData: Record<string, any>;
+    isCancelled:boolean;
+    amount: string;
+    date: string;
+
+  };
+}
+interface AdminAppointmentsResponse {
+  success: boolean;
+  message: string;
+  appointments: Appointment[];
 }
 
 interface DoctorResponse {
@@ -44,6 +76,7 @@ const AdminContextProvider: React.FC<AdminContextProviderProps> = ({ children })
   const [token, setToken] = useState<string>(() => localStorage.getItem('token') || '');
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -85,17 +118,61 @@ const AdminContextProvider: React.FC<AdminContextProviderProps> = ({ children })
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to change availability");
     }
+
   };
 
-  const value: AdminContextType = {
-    token,
-    setToken,
-    BackendUrl,
-    changeAvailability,
-    doctors,
-    setDoctors,
-    loading,
-  };
+const getAdminappointments=async()=>{
+ try {
+      const response = await axios.get<AdminAppointmentsResponse>(
+        `${BackendUrl}/api/admin/appointmentsAdmin`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success(response.data.message);
+      setAppointments(response.data.appointments)
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "failed to get adminappointments");
+    }
+}
+
+const cancelAppointment = async (appointmentId: string) => {
+  try {
+    const response = await axios.put(
+      `${BackendUrl}/api/admin/cancel-appointment`,
+       {appointmentId},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    toast.success(response.data.message || 'Appointment cancelled successfully');
+  } catch (error: any) {
+    console.error(error);
+    toast.error(error.response?.data?.message || 'Failed to cancel appointment');
+  }
+};
+
+const value: AdminContextType = {
+  token,
+  setToken,
+  BackendUrl,
+  changeAvailability,
+  getAdminappointments,
+  doctors,
+  setDoctors,
+  appointments,
+  setAppointments,
+  cancelAppointment,
+  loading,
+};
 
   return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>;
 };

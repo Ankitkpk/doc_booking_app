@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import jwt from 'jsonwebtoken';
 import Doctor from "../models/doctor";
+import Appointment from "../models/appointment";
 import uploadImageOnCloudinary from "../../utils/uploadImageCloudinary";
 import type { CloudinaryUploadResponse } from "../../utils/uploadImageCloudinary";
 import bcrypt from "bcrypt"; 
@@ -124,9 +125,59 @@ const adminLogin = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+ const appointmentsAdmin = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const appointments = await Appointment.find({});
+    console.log(appointments);
+    return res.status(200).json({
+      success: true,
+      message: "Appointments fetched successfully",
+      appointments
+    });
 
+  } catch (error: any) {
+    console.error("Error in appointmentsAdmin:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch appointments",
+      error: error.message,
+    });
+  }
+};
 
-export default { doctorRegister ,adminLogin};
+const cancelAppointmentAdmin = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { appointmentId } = req.body;
+
+    if (!appointmentId) {
+      return res.status(400).json({ success: false, message: "Appointment ID is required." });
+    }
+
+    const appointment = await Appointment.findById(appointmentId);
+    if (!appointment) {
+      return res.status(404).json({ success: false, message: "Appointment not found." });
+    }
+
+    // Mark appointment as cancelled
+    appointment.isCancelled = true;
+    await appointment.save();
+
+    // Free the booked slot in doctor's document once appointment is cancelled//
+    const { docId, slotDate, slotTime } = appointment;
+   
+    await Doctor.findByIdAndUpdate(docId, {
+      $pull:{ [`slots_booked.${slotDate}`]: slotTime }
+    });
+
+    return res.status(200).json({ success: true, message: "Appointment cancelled successfully." });
+
+  } catch (error) {
+    console.error("Error cancelling appointment:", error);
+    return res.status(500).json({ success: false, message: "Something went wrong." });
+  }
+};
+
+export default { doctorRegister ,adminLogin,appointmentsAdmin,cancelAppointmentAdmin};
 
 
 
