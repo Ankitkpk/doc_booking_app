@@ -5,6 +5,7 @@ import Appointment from "../models/appointment";
 import uploadImageOnCloudinary from "../../utils/uploadImageCloudinary";
 import type { CloudinaryUploadResponse } from "../../utils/uploadImageCloudinary";
 import bcrypt from "bcrypt"; 
+import User from "../models/user";
 
 const doctorRegister = async (req: Request, res: Response): Promise<any> => {
   try {
@@ -128,7 +129,6 @@ const adminLogin = async (req: Request, res: Response): Promise<any> => {
  const appointmentsAdmin = async (req: Request, res: Response): Promise<any> => {
   try {
     const appointments = await Appointment.find({});
-    console.log(appointments);
     return res.status(200).json({
       success: true,
       message: "Appointments fetched successfully",
@@ -158,7 +158,6 @@ const cancelAppointmentAdmin = async (req: Request, res: Response): Promise<any>
       return res.status(404).json({ success: false, message: "Appointment not found." });
     }
 
-    // Mark appointment as cancelled
     appointment.isCancelled = true;
     await appointment.save();
 
@@ -177,7 +176,32 @@ const cancelAppointmentAdmin = async (req: Request, res: Response): Promise<any>
   }
 };
 
-export default { doctorRegister ,adminLogin,appointmentsAdmin,cancelAppointmentAdmin};
+export const adminPanel = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const totalDoctors = await Doctor.countDocuments();
+    const totalAppointments = await Appointment.countDocuments();
+    const totalPatients = await User.countDocuments();
+    const allAppointments = await Appointment.countDocuments().sort({createAt:-1}); 
+
+    return res.status(200).json({
+      success: true,
+      dashData: {
+        totalDoctors,
+        allAppointments,
+        totalPatients,
+        latestAppointments:allAppointments
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching dashboard data:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+    });
+  }
+};
+
+export default { doctorRegister ,adminLogin,appointmentsAdmin,cancelAppointmentAdmin,adminPanel };
 
 
 

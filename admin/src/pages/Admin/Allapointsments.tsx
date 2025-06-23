@@ -3,7 +3,7 @@ import { useAdminContext } from '../../hooks/useAdminContext';
 import { assets } from '../../assets/assets_admin/assets';
 
 const AllAppointments: React.FC = () => {
-  const { token, getAdminappointments, appointments } = useAdminContext();
+  const { token, getAdminappointments,appointments,cancelAppointment } = useAdminContext();
 
   useEffect(() => {
     if (token) {
@@ -60,13 +60,13 @@ const AllAppointments: React.FC = () => {
               </p>
               <div className='flex items-center'>
                 {appointment.isCancelled ? (
-                  <p className="text-red-300 font-medium">Cancelled</p>
+                  <p className="text-red-500 font-medium">Cancelled</p>
                 ) : (
                   <img
                     src={assets.cancel_icon}
                     alt="Cancel Appointment"
                     className="w-10 h-10 cursor-pointer"
-            
+                    onClick={()=>cancelAppointment(appointment._id)}
                   />
                 )}
               </div>

@@ -9,7 +9,13 @@ interface AdminContextType {
   BackendUrl: string;
   changeAvailability: (docId: string) => Promise<void>;
   getAdminappointments:()=>Promise<void>;
+  cancelAppointment:(appointmentId: string)=>Promise<void>;
+  getAdminPanelData:()=>Promise<void>;
   doctors: Doctor[];
+  totaldoctors:number,
+  totalusers:number,
+  totalpatients:number,
+  totalappointments:number,
   appointments:Appointment[];
   setAppointments: React.Dispatch<React.SetStateAction<Appointment[]>>;
   setDoctors: React.Dispatch<React.SetStateAction<Doctor[]>>;
@@ -63,6 +69,33 @@ interface DoctorResponse {
   message: string;
   doctors: Doctor[];
 }
+interface Doctor {
+  _id: string;
+  name: string;
+  image: string;
+  available: boolean;
+  slots_booked: Record<string, string[]>;
+  speciality: string;
+}
+interface Appointment {
+  _id: string;
+  slotTime: string;
+  slotDate: string;
+  userData: Record<string, any>; 
+  doctorData: Record<string, any>; 
+  isCancelled:boolean;
+  amount: string;
+  date: string;
+}
+interface AdminPanelResponse {
+  success:boolean;
+  dashData:{
+  totalDoctors:Doctor[],
+  allAppointments:Appointment[],
+  totalPatients:number,
+  latestAppointments:Appointment[]
+  }
+}
 
 export const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
@@ -77,6 +110,10 @@ const AdminContextProvider: React.FC<AdminContextProviderProps> = ({ children })
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [totaldoctors,setTotalDoctors]=useState<number>(0);
+  const [totalappointments,setTotalAppointments]=useState<number>(0);
+  const [totalusers,setTotalUsers]=useState<number>(0);
+  const [totalpatients,setTotalPatients]=useState<number>(0);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -140,9 +177,9 @@ const getAdminappointments=async()=>{
     }
 }
 
-const cancelAppointment = async (appointmentId: string) => {
+const cancelAppointment = async(appointmentId:string) => {
   try {
-    const response = await axios.put(
+    const response = await axios.post<{success:boolean, message:string}>(
       `${BackendUrl}/api/admin/cancel-appointment`,
        {appointmentId},
       {
@@ -154,12 +191,37 @@ const cancelAppointment = async (appointmentId: string) => {
     );
 
     toast.success(response.data.message || 'Appointment cancelled successfully');
+    //cancle appointment ui updates //
+    setAppointments(prev =>
+      prev.map(appt =>
+        appt._id === appointmentId ? {...appt ,isCancelled:true}:appt
+    )
+  );
   } catch (error: any) {
     console.error(error);
     toast.error(error.response?.data?.message || 'Failed to cancel appointment');
   }
 };
 
+const getAdminPanelData=async()=>{
+  try {
+    const response = await axios.get<AdminPanelResponse>(
+      `${BackendUrl}/api/admin/adminPanel`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    setTotalPatients(response.data.dashData.totalPatients);
+    setAppointments(response.data.dashData.allAppointments);
+    setDoctors(response.data.dashData.totalDoctors);
+  } catch (error: any) {
+    console.error(error);
+  }
+
+}
 const value: AdminContextType = {
   token,
   setToken,
@@ -172,6 +234,11 @@ const value: AdminContextType = {
   setAppointments,
   cancelAppointment,
   loading,
+  totaldoctors,
+  totalusers,
+  totalpatients,
+  totalappointments,
+  getAdminPanelData
 };
 
   return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>;

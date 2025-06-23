@@ -8,6 +8,7 @@ router.post('/doctorRegister', authAdmin, upload.single('image'), adminControlle
 router.get('/appointmentsAdmin',authAdmin,adminController.appointmentsAdmin);
 router.post('/adminLogin',adminController.adminLogin);
 router.post('/cancel-appointment',authAdmin,adminController.cancelAppointmentAdmin);
+router.get('/adminPanel',authAdmin,adminController.adminPanel);
 
 
 export default router;
