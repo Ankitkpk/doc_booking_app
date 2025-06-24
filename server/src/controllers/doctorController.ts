@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Doctor from "../models/doctor";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import Appointment from "../models/appointment";
 
 
 const getAllDoctors = async (req: Request, res: Response): Promise<any> => {
@@ -81,7 +82,7 @@ const doctorLogin = async (req: Request, res: Response): Promise<any> => {
         message: 'Invalid credentials',
       });
     }
-    const token = jwt.sign(
+    const dtoken = jwt.sign(
       { id: doctor._id, email: doctor.email }, 
       process.env.JWT_SECRET as string,
       { expiresIn: '1d' } 
@@ -90,7 +91,7 @@ const doctorLogin = async (req: Request, res: Response): Promise<any> => {
     return res.status(200).json({
       success: true,
       message: 'Login successful',
-      token
+      dtoken
     });
 
   } catch (error: any) {
@@ -103,8 +104,74 @@ const doctorLogin = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+const getDoctorProfile = async (req: Request, res: Response): Promise<any> => {
+  const docId = req.docId;
 
-export default { getAllDoctors,changeAvailability,doctorLogin};
+  try {
+    if (!docId) {
+      return res.status(400).json({
+        success: false,
+        message: "Doctor ID is missing from request.",
+      });
+    }
+
+    const doctor = await Doctor.findById(docId).select("-password"); 
+
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: "Doctor not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Doctor profile fetched successfully.",
+      doctor,
+    });
+  } catch (error: any) {
+    console.error("Error fetching doctor profile:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching doctor profile.",
+      error: error.message,
+    });
+  }
+};
+
+ const getDoctorAppointments = async (req: Request, res: Response): Promise<any> => {
+  const docId = req.docId;
+  console.log(docId);
+  try {
+    if (!docId) {
+      return res.status(400).json({
+        success: false,
+        message: "Doctor ID missing from request.",
+      });
+    }
+
+    const appointments = await Appointment.find({ docId })
+      .populate("userData", "name email image") 
+      .sort({ slotDate: -1, slotTime: -1 });
+
+    return res.status(200).json({
+      success: true,
+      message: "Appointments fetched successfully.",
+      appointments,
+    });
+  } catch (error: any) {
+    console.error("Error fetching doctor appointments:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching appointments.",
+      error: error.message,
+    });
+  }
+};
+
+
+
+export default { getAllDoctors,changeAvailability,doctorLogin,getDoctorAppointments,getDoctorProfile};
 
 
  
