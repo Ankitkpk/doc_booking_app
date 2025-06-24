@@ -93,10 +93,10 @@ const AddDoctor: React.FC = () => {
   };
 
   return (
-    <div className="w-full min-h-screen overflow-y-auto flex items-start justify-center bg-gray-100 py-4">
+    <div className="w-full min-h-screen overflow-y-auto flex items-start  bg-gray-100 py-4">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-2xl mx-4 sm:mx-6 space-y-8 bg-white p-6 rounded-lg shadow"
+        className="w-full max-w-2xl mx-10 sm:mx-8 space-y-8 bg-white p-6 rounded-lg shadow"
       >
         <div className="flex flex-col items-center sm:items-start gap-2">
           <label htmlFor="doc-img" className="cursor-pointer">

@@ -8,15 +8,14 @@ interface AdminContextType {
   setToken: React.Dispatch<React.SetStateAction<string>>;
   BackendUrl: string;
   changeAvailability: (docId: string) => Promise<void>;
-  getAdminappointments:()=>Promise<void>;
-  cancelAppointment:(appointmentId: string)=>Promise<void>;
-  getAdminPanelData:()=>Promise<void>;
+  getAdminappointments: () => Promise<void>;
+  cancelAppointment: (appointmentId: string) => Promise<void>;
+  getAdminPanelData: () => Promise<void>;
   doctors: Doctor[];
-  totaldoctors:number,
-  totalusers:number,
-  totalpatients:number,
-  totalappointments:number,
-  appointments:Appointment[];
+  totalDoctors: number;
+  totalpatients: number;
+  totalappointments: number;
+  appointments: Appointment[];
   setAppointments: React.Dispatch<React.SetStateAction<Appointment[]>>;
   setDoctors: React.Dispatch<React.SetStateAction<Doctor[]>>;
   loading: boolean;
@@ -26,13 +25,14 @@ interface ChangeAvailabilityResponse {
   success: boolean;
   message: string;
 }
+
 interface Appointment {
   _id: string;
   slotTime: string;
   slotDate: string;
-  userData: Record<string, any>; 
-  doctorData: Record<string, any>; 
-  isCancelled:boolean;
+  userData: Record<string, any>;
+  doctorData: Record<string, any>;
+  isCancelled: boolean;
   amount: string;
   date: string;
 }
@@ -43,21 +43,9 @@ interface Doctor {
   image: string;
   available: boolean;
   speciality: string;
+  slots_booked: Record<string, string[]>;
 }
-interface AppointmentRequest {
-  message: string;
-  success: boolean;
-  appointments: {
-    slotTime: string;
-    slotDate: string;
-    userData: Record<string, any>;
-    doctorData: Record<string, any>;
-    isCancelled:boolean;
-    amount: string;
-    date: string;
 
-  };
-}
 interface AdminAppointmentsResponse {
   success: boolean;
   message: string;
@@ -69,32 +57,15 @@ interface DoctorResponse {
   message: string;
   doctors: Doctor[];
 }
-interface Doctor {
-  _id: string;
-  name: string;
-  image: string;
-  available: boolean;
-  slots_booked: Record<string, string[]>;
-  speciality: string;
-}
-interface Appointment {
-  _id: string;
-  slotTime: string;
-  slotDate: string;
-  userData: Record<string, any>; 
-  doctorData: Record<string, any>; 
-  isCancelled:boolean;
-  amount: string;
-  date: string;
-}
+
 interface AdminPanelResponse {
-  success:boolean;
-  dashData:{
-  totalDoctors:Doctor[],
-  allAppointments:Appointment[],
-  totalPatients:number,
-  latestAppointments:Appointment[]
-  }
+  success: boolean;
+  dashData: {
+    totalDoctors: Doctor[];
+    allAppointments: Appointment[];
+    totalPatients: number;
+    latestAppointments: Appointment[];
+  };
 }
 
 export const AdminContext = createContext<AdminContextType | undefined>(undefined);
@@ -110,10 +81,9 @@ const AdminContextProvider: React.FC<AdminContextProviderProps> = ({ children })
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [totaldoctors,setTotalDoctors]=useState<number>(0);
-  const [totalappointments,setTotalAppointments]=useState<number>(0);
-  const [totalusers,setTotalUsers]=useState<number>(0);
-  const [totalpatients,setTotalPatients]=useState<number>(0);
+  const [totalDoctors, setTotalDoctors] = useState<number>(0);
+  const [totalappointments, setTotalAppointments] = useState<number>(0);
+  const [totalpatients, setTotalPatients] = useState<number>(0);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -147,19 +117,18 @@ const AdminContextProvider: React.FC<AdminContextProviderProps> = ({ children })
 
       toast.success(response.data.message);
 
-        setDoctors((prevDoctors) =>
+      setDoctors((prevDoctors) =>
         prevDoctors.map((doc) =>
           doc._id === docId ? { ...doc, available: !doc.available } : doc
-        ) 
+        )
       );
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to change availability");
+      toast.error(error.response?.data?.message || 'Failed to change availability');
     }
-
   };
 
-const getAdminappointments=async()=>{
- try {
+  const getAdminappointments = async () => {
+    try {
       const response = await axios.get<AdminAppointmentsResponse>(
         `${BackendUrl}/api/admin/appointmentsAdmin`,
         {
@@ -171,39 +140,38 @@ const getAdminappointments=async()=>{
       );
 
       toast.success(response.data.message);
-      setAppointments(response.data.appointments)
+      setAppointments(response.data.appointments);
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "failed to get adminappointments");
+      toast.error(error.response?.data?.message || 'Failed to get admin appointments');
     }
-}
+  };
 
-const cancelAppointment = async(appointmentId:string) => {
-  try {
-    const response = await axios.post<{success:boolean, message:string}>(
-      `${BackendUrl}/api/admin/cancel-appointment`,
-       {appointmentId},
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+  const cancelAppointment = async (appointmentId: string) => {
+    try {
+      const response = await axios.post<{ success: boolean; message: string }>(
+        `${BackendUrl}/api/admin/cancel-appointment`,
+        { appointmentId },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    toast.success(response.data.message || 'Appointment cancelled successfully');
-    //cancle appointment ui updates //
-    setAppointments(prev =>
-      prev.map(appt =>
-        appt._id === appointmentId ? {...appt ,isCancelled:true}:appt
-    )
-  );
-  } catch (error: any) {
-    console.error(error);
-    toast.error(error.response?.data?.message || 'Failed to cancel appointment');
-  }
-};
+      toast.success(response.data.message || 'Appointment cancelled successfully');
+      setAppointments((prev) =>
+        prev.map((appt) =>
+          appt._id === appointmentId ? { ...appt, isCancelled: true } : appt
+        )
+      );
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.response?.data?.message || 'Failed to cancel appointment');
+    }
+  };
 
-const getAdminPanelData=async()=>{
+ const getAdminPanelData = async () => {
   try {
     const response = await axios.get<AdminPanelResponse>(
       `${BackendUrl}/api/admin/adminPanel`,
@@ -214,32 +182,39 @@ const getAdminPanelData=async()=>{
         },
       }
     );
-    setTotalPatients(response.data.dashData.totalPatients);
-    setAppointments(response.data.dashData.allAppointments);
-    setDoctors(response.data.dashData.totalDoctors);
+
+    const data = response.data.dashData;
+    console.log("Received doctors:", data.totalDoctors);
+
+    setTotalPatients(data.totalPatients);
+    setTotalAppointments(data.allAppointments.length);
+    setTotalDoctors(data.totalDoctors.length); 
+    setDoctors(data.totalDoctors);              
+    setAppointments(data.allAppointments);
+
   } catch (error: any) {
     console.error(error);
   }
-
-}
-const value: AdminContextType = {
-  token,
-  setToken,
-  BackendUrl,
-  changeAvailability,
-  getAdminappointments,
-  doctors,
-  setDoctors,
-  appointments,
-  setAppointments,
-  cancelAppointment,
-  loading,
-  totaldoctors,
-  totalusers,
-  totalpatients,
-  totalappointments,
-  getAdminPanelData
 };
+
+
+  const value: AdminContextType = {
+    token,
+    setToken,
+    BackendUrl,
+    changeAvailability,
+    getAdminappointments,
+    doctors,
+    setDoctors,
+    appointments,
+    setAppointments,
+    cancelAppointment,
+    loading,
+    totalDoctors,
+    totalpatients,
+    totalappointments,
+    getAdminPanelData,
+  };
 
   return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>;
 };

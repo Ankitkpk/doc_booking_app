@@ -178,18 +178,17 @@ const cancelAppointmentAdmin = async (req: Request, res: Response): Promise<any>
 
 export const adminPanel = async (req: Request, res: Response): Promise<any> => {
   try {
-    const totalDoctors = await Doctor.countDocuments();
-    const totalAppointments = await Appointment.countDocuments();
+    const totalDoctors = await Doctor.find(); 
     const totalPatients = await User.countDocuments();
-    const allAppointments = await Appointment.countDocuments().sort({createAt:-1}); 
+    const allAppointments = await Appointment.find().sort({ createdAt: -1 });
 
     return res.status(200).json({
       success: true,
       dashData: {
-        totalDoctors,
+        totalDoctors, 
         allAppointments,
         totalPatients,
-        latestAppointments:allAppointments
+        latestAppointments: allAppointments.slice(0, 5), 
       },
     });
   } catch (error) {
@@ -200,6 +199,7 @@ export const adminPanel = async (req: Request, res: Response): Promise<any> => {
     });
   }
 };
+
 
 export default { doctorRegister ,adminLogin,appointmentsAdmin,cancelAppointmentAdmin,adminPanel };
 

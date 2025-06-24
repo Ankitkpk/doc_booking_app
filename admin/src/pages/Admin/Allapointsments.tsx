@@ -12,7 +12,7 @@ const AllAppointments: React.FC = () => {
   }, [token]);
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 py-6">
+    <div className="w-full max-w-6xl px-4 py-6">
       <h1 className="mb-4 text-2xl font-semibold text-gray-800">All Appointments</h1>
 
       <div className="bg-white rounded shadow-sm text-sm max-h-[80vh] overflow-y-auto border border-gray-100">
