@@ -9,6 +9,8 @@ router.post('/changeAvailability',authAdmin,doctorController.changeAvailability)
 router.post('/doctorLogin',doctorController.doctorLogin);
 router.get('/getDoctorAppointments',authDoctor,doctorController.getDoctorAppointments);
 router.get('/getDoctorProfile',authDoctor,doctorController.getDoctorProfile);
+router.post('/appointment-complete',authDoctor,doctorController.completeAppointment);
+router.post('/appointment-cancelled',authDoctor,doctorController.cancelAppointment);
 
 
 export default router;

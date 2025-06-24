@@ -14,7 +14,6 @@ const AllAppointments: React.FC = () => {
   return (
     <div className="w-full max-w-6xl px-4 py-6">
       <h1 className="mb-4 text-2xl font-bold text-gray-800 text-center">All Appointments</h1>
-
       <div className="w-full overflow-x-auto">
         <table className="w-full text-sm text-left border border-gray-200">
           <thead className="bg-gray-100 text-gray-700 font-semibold">

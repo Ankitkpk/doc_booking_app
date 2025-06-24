@@ -169,9 +169,66 @@ const getDoctorProfile = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+const cancelAppointment = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const docId = req.docId;
+    const { appointmentId } = req.body;
+
+    const appointment = await Appointment.findById(appointmentId);
+    if (!appointment) {
+      return res.status(404).json({ success: false, message: "Appointment not found." });
+    }
+
+    if (appointment.docId.toString() !== docId) {
+      return res.status(403).json({ success: false, message: "Unauthorized to cancel this appointment." });
+    }
+
+    appointment.isCancelled = true;
+    await appointment.save();
+    await Doctor.findByIdAndUpdate(docId, {
+      $pull: { [`slots_booked.${appointment.slotDate}`]: appointment.slotTime }
+    });
+
+    return res.status(200).json({ success: true, message: "Appointment cancelled successfully." });
+
+  } catch (error) {
+    console.error("Error cancelling appointment:", error);
+    return res.status(500).json({ success: false, message: "Something went wrong." });
+  }
+};
 
 
-export default { getAllDoctors,changeAvailability,doctorLogin,getDoctorAppointments,getDoctorProfile};
+const completeAppointment = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const docId = req.docId; 
+    const { appointmentId } = req.body;
+
+    const appointment = await Appointment.findById(appointmentId);
+    if (!appointment) {
+      return res.status(404).json({ success: false, message: "Appointment not found." });
+    }
+
+    // Ensure doctor owns this appointment
+    if (appointment.docId.toString() !== docId) {
+      return res.status(403).json({ success: false, message: "Unauthorized to complete this appointment." });
+    }
+
+    appointment.isCompleted = true;
+    await appointment.save();
+
+    return res.status(200).json({
+      success: true,
+      message: `Appointment marked as completed.`,
+    });
+  } catch (error) {
+    console.error("Error completing appointment:", error);
+    return res.status(500).json({ success: false, message: "Something went wrong." });
+  }
+};
+
+
+
+export default { getAllDoctors,changeAvailability,doctorLogin,getDoctorAppointments,getDoctorProfile,cancelAppointment,completeAppointment};
 
 
  

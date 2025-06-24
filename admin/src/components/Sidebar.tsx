@@ -36,7 +36,6 @@ const Sidebar: React.FC = () => {
         <FaBars size={20} />
       </button>
 
-      {/* Mobile Overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black opacity-40 z-40 md:hidden"
