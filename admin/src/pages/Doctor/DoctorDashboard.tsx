@@ -16,7 +16,9 @@ const DoctorDashboard: React.FC = () => {
   useEffect(() => {
     getAdminPanelData();
   }, [token]);
-
+ 
+let result=getAdminPanelData();
+console.log(result);
   return (
     <div className="m-5">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-8">
