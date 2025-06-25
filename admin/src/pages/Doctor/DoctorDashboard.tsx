@@ -22,7 +22,6 @@ console.log(result);
   return (
     <div className="m-5">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-8">
-        {/* Doctor Card */}
         <div className="bg-white shadow-md rounded-lg p-4  max-w-80">
           <div className="flex items-center gap-3">
             <img src={assets.doctor_icon} alt="Doctors" className="w-16" />
@@ -32,8 +31,6 @@ console.log(result);
             </div>
           </div>
         </div>
-
-        {/* Appointment Card */}
         <div className="bg-white shadow-md rounded-lg p-4  max-w-80">
           <div className="flex items-center gap-4">
             <img src={assets.appointments_icon} alt="Appointments" className="w-16" />
@@ -43,8 +40,6 @@ console.log(result);
             </div>
           </div>
         </div>
-
-        {/* Patient Card */}
         <div className="bg-white shadow-md rounded-lg p-4 max-w-80">
           <div className="flex items-center gap-4">
             <img src={assets.patients_icon} alt="Patients" className="w-16" />

@@ -141,7 +141,6 @@ const getDoctorProfile = async (req: Request, res: Response): Promise<any> => {
 
  const getDoctorAppointments = async (req: Request, res: Response): Promise<any> => {
   const docId = req.docId;
-  console.log(docId);
   try {
     if (!docId) {
       return res.status(400).json({

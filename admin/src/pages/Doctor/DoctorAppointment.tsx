@@ -4,8 +4,7 @@ import { useAdminContext } from '../../hooks/useAdminContext';
 import { assets } from '../../assets/assets_admin/assets';
 
 const DoctorAppointment: React.FC = () => {
-  const { dtoken, getAppointments, appointments } = useDoctorContext();
-  const { cancelAppointment } = useAdminContext();
+  const { dtoken, getAppointments, appointments,CancelAppointment,CompleteAppointment } = useDoctorContext();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,17 +19,10 @@ const DoctorAppointment: React.FC = () => {
         }
       }
     };
-    fetchAppointments();
+ let result=fetchAppointments();
+ console.log(result);
   }, [dtoken]);
 
-  const handleCancel = async (appointmentId: string) => {
-    try {
-      await cancelAppointment(appointmentId);
-      await getAppointments();
-    } catch (error) {
-      console.error('Failed to cancel appointment:', error);
-    }
-  };
 
   return (
     <div className="w-full max-w-6xl px-4 py-6">
@@ -73,7 +65,7 @@ const DoctorAppointment: React.FC = () => {
                   src={appointment.userData?.image}
                   alt={appointment.userData?.name || 'User'}
                 />
-                <p className="truncate font-medium text-gray-700">{appointment.userData?.name}</p>
+                <p className="whitespace-normal break-words truncate font-medium text-gray-700">{appointment.userData?.name}</p>
               </div>
 
               <p className="text-gray-800">
@@ -87,28 +79,27 @@ const DoctorAppointment: React.FC = () => {
               </p>
 
               <div className="flex items-center gap-3">
-                {appointment.isCancelled ? (
-                  <span className="px-3 py-1 text-xs font-semibold text-red-600 bg-red-100 rounded-full">
-                    Cancelled
-                  </span>
-                ) : (
-                  <>
+                {
+                   appointment.isCancelled?<p className='whitespace-normal break-words text-red-500'>cancelled</p>
+                  :appointment.isCompleted?<p className='whitespace-normal break-words text-green-600'> complete</p>
+                  :<>
                     <img
                       src={assets.cancel_icon}
                       alt="Cancel"
                       title="Cancel Appointment"
                       className="w-8 h-8 cursor-pointer hover:scale-110 transition"
-                      onClick={() => handleCancel(appointment._id)}
+                      onClick={() =>CancelAppointment(appointment._id)}
                     />
                     <img
                       src={assets.tick_icon}
                       alt="Confirmed"
                       title="Confirmed"
                       className="w-8 h-8"
+                      onClick={()=>CompleteAppointment(appointment._id)}
                     />
                   </>
-                )}
-              </div>
+                }
+                 </div>
             </div>
           ))
         ) : (
