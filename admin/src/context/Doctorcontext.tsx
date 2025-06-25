@@ -33,11 +33,42 @@ interface DoctorContextType {
   setDToken: React.Dispatch<React.SetStateAction<string>>;
   BackendUrl: string;
   appointments: Appointment[];
+  dashData: DashboardData | null;
+  setDashData: React.Dispatch<React.SetStateAction<DashboardData | null>>;
   getAppointments: () => Promise<void>;
   CompleteAppointment:(appointmentId:string)=>Promise<void>;
   CancelAppointment:(appointmentId:string)=>Promise<void>;
+  getDoctorDashboardData:()=>Promise<void>
+  profileData: Doctor | null;
+  setProfileData: React.Dispatch<React.SetStateAction<Doctor | null>>;
+  getProfileData: () => Promise<void>;
 }
 
+interface DashboardData {
+  earning: number;
+  appointments: number;
+  patients: number;
+  latestAppointments: Appointment[];
+}
+
+interface DoctorDashboardResponse {
+  success: boolean;
+  message: string;
+  data: DashboardData;
+}
+
+interface Doctor {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  image: string;
+  fees: number;
+  specialization: string;
+  available: boolean;
+  // Add more fields as needed
+}
 export const DoctorContext = createContext<DoctorContextType | undefined>(undefined);
 interface DoctorContextProviderProps {
   children: ReactNode;
@@ -46,6 +77,8 @@ const BackendUrl = import.meta.env.VITE_BACKEND_URL as string;
 const DoctorContextProvider: React.FC<DoctorContextProviderProps> = ({ children }) => {
 const [dtoken, setDToken] = useState<string>(() => localStorage.getItem('dtoken') || '');
 const [appointments, setAppointments] = useState<Appointment[]>([]);
+const [dashData, setDashData] = useState<DashboardData | null>(null);
+const [profileData, setProfileData] = useState<Doctor | null>(null);
 
   const getAppointments = async () => {
     try {
@@ -57,6 +90,7 @@ const [appointments, setAppointments] = useState<Appointment[]>([]);
       });
       if (response.data.success) {
         setAppointments(response.data.appointments);
+        toast.success(response.data.message);
       }
     } catch (error) {
       console.error('Error fetching appointments:', error);
@@ -121,20 +155,66 @@ const CompleteAppointment = async (appointmentId: string) => {
   }
 };
 
+const getDoctorDashboardData = async () => {
+  try {
+    const response = await axios.get<DoctorDashboardResponse>(
+      `${BackendUrl}/api/doctor/doctorDashboard`,
+      {
+        headers: {
+          Authorization: `Bearer ${dtoken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.data.success) {
+      toast.success(response.data.message);
+      setDashData(response.data.data)
+    } else {
+      toast.error("Failed to cancel appointment.");
+    }
+  } catch (error) {
+    console.error("Error cancelling appointment:", error);
+    toast.error("Something went wrong while featching dashboard data.");
+  }
+};
 
+const getProfileData = async () => {
+  try {
+    const response = await axios.get<{ success: boolean; message: string; doctor: Doctor }>(
+      `${BackendUrl}/api/doctor/getDoctorProfile`,
+      {
+        headers: {
+          Authorization: `Bearer ${dtoken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-  useEffect(() => {
-    if (dtoken) getAppointments();
-  }, [dtoken]);
-
+    if (response.data.success) {
+      toast.success(response.data.message);
+      setProfileData(response.data.doctor);
+    } else {
+      toast.error("Failed to fetch profile data.");
+    }
+  } catch (error) {
+    console.error("Error fetching profile data:", error);
+    toast.error("Something went wrong while fetching the profile.");
+  }
+};
   const value: DoctorContextType = {
     dtoken,
     setDToken,
+    setDashData,
+    dashData,
     BackendUrl,
     appointments,
     getAppointments,
     CompleteAppointment,
-    CancelAppointment
+    CancelAppointment,
+    getDoctorDashboardData,
+     profileData,
+    setProfileData,
+    getProfileData,
   };
 
   return (

@@ -11,6 +11,8 @@ router.get('/getDoctorAppointments',authDoctor,doctorController.getDoctorAppoint
 router.get('/getDoctorProfile',authDoctor,doctorController.getDoctorProfile);
 router.post('/appointment-complete',authDoctor,doctorController.completeAppointment);
 router.post('/appointment-cancelled',authDoctor,doctorController.cancelAppointment);
+router.get('/doctorDashboard',authDoctor,doctorController.doctorDashboard);
+router.post('/updateProfile',authDoctor,doctorController.updateProfile);
 
 
 export default router;

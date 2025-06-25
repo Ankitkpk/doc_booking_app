@@ -104,41 +104,6 @@ const doctorLogin = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-const getDoctorProfile = async (req: Request, res: Response): Promise<any> => {
-  const docId = req.docId;
-
-  try {
-    if (!docId) {
-      return res.status(400).json({
-        success: false,
-        message: "Doctor ID is missing from request.",
-      });
-    }
-
-    const doctor = await Doctor.findById(docId).select("-password"); 
-
-    if (!doctor) {
-      return res.status(404).json({
-        success: false,
-        message: "Doctor not found.",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Doctor profile fetched successfully.",
-      doctor,
-    });
-  } catch (error: any) {
-    console.error("Error fetching doctor profile:", error.message);
-    return res.status(500).json({
-      success: false,
-      message: "Server error while fetching doctor profile.",
-      error: error.message,
-    });
-  }
-};
-
  const getDoctorAppointments = async (req: Request, res: Response): Promise<any> => {
   const docId = req.docId;
   try {
@@ -172,7 +137,6 @@ const cancelAppointment = async (req: Request, res: Response): Promise<any> => {
   try {
     const docId = req.docId;
     const { appointmentId } = req.body;
-
     const appointment = await Appointment.findById(appointmentId);
     if (!appointment) {
       return res.status(404).json({ success: false, message: "Appointment not found." });
@@ -225,9 +189,119 @@ const completeAppointment = async (req: Request, res: Response): Promise<any> =>
   }
 };
 
+const doctorDashboard = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const docId = req.docId;
 
+    const appointments = await Appointment.find({ docId });
 
-export default { getAllDoctors,changeAvailability,doctorLogin,getDoctorAppointments,getDoctorProfile,cancelAppointment,completeAppointment};
+    let earning = 0;
+    appointments.forEach((item) => {
+      if (item.isCompleted && item.payment) {
+        earning += item.amount;
+      }
+    });
+
+    let patients: string[] = [];
+    appointments.forEach((item) => {
+      if (!patients.includes(item.userId.toString())) {
+        patients.push(item.userId.toString());
+      }
+    });
+
+    const dashboardData = {
+      earning,
+      appointments: appointments.length,
+      patients: patients.length,
+      latestAppointments: appointments.reverse().slice(0, 5),
+    };
+   console.log(dashboardData);
+    return res.status(200).json({
+      success: true,
+      data: dashboardData,
+      message:'dashboard data successfully retrived'
+    });
+
+  } catch (error) {
+    console.error("Error in doctorDashboard:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+//api to get doctor profile//
+const getDoctorProfile = async (req: Request, res: Response): Promise<any> => {
+  const docId = req.docId;
+
+  try {
+    if (!docId) {
+      return res.status(400).json({
+        success: false,
+        message: "Doctor ID is missing from request.",
+      });
+    }
+
+    const doctor = await Doctor.findById(docId).select("-password"); 
+
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: "Doctor not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Doctor profile fetched successfully.",
+      doctor,
+    });
+  } catch (error: any) {
+    console.error("Error fetching doctor profile:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching doctor profile.",
+      error: error.message,
+    });
+  }
+};
+
+export const updateProfile = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const docId = req.docId; // assuming this comes from auth middleware
+    const { fees, address, available } = req.body;
+
+    if (!docId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const updatedDoctor = await Doctor.findByIdAndUpdate(
+      docId,
+      {
+        fees,
+        address,
+        available
+      },
+      { new: true }
+    );
+
+    if (!updatedDoctor) {
+      return res.status(404).json({ success: false, message: "Doctor not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      data: updatedDoctor,
+    });
+
+  } catch (error) {
+    console.error("Update profile error:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+export default { updateProfile,getAllDoctors,changeAvailability,doctorLogin,getDoctorAppointments,getDoctorProfile,cancelAppointment,completeAppointment,doctorDashboard};
 
 
  
