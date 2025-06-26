@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useDoctorContext } from '../../hooks/useDoctorContext';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+
 interface Doctor {
   _id: string;
   name: string;
   email: string;
   phone: string;
-  address:{
+   address:{
     line1:string,
     line2:string
   };
@@ -17,8 +18,8 @@ interface Doctor {
   available: boolean;
   degree:string;
   about:string;
-  expirence:string;
-  message:string;
+  expirence:string,
+  message:string,
   success:boolean
 
 }
