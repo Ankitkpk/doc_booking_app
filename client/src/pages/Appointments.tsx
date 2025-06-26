@@ -160,7 +160,7 @@ const Appointments: React.FC = () => {
           <h1 className="text-2xl font-semibold text-black mb-2">{doctInfo.name}</h1>
           <div className="flex items-center gap-4 mb-4">
             <p className="text-sm text-gray-600">MBBS - {doctInfo.speciality}</p>
-            <p className="p-2 rounded-full border border-gray-300 text-sm">{doctInfo.experience}</p>
+            <p className="p-1 rounded-full border border-gray-300 text-xs">{doctInfo.expirence} years</p>
           </div>
           <div className="flex items-center gap-2 mb-2">
             <p className="text-md font-medium text-gray-700">About</p>

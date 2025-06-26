@@ -3,13 +3,25 @@ import type { ReactNode } from 'react';
 import axios from 'axios';
 
 
+
+
+
 interface Doctor {
   _id: string;
+  docId:string;
   name: string;
+  email: string;
+  phone: string;
+  address:Object;
   image: string;
+  fees: number;
+  speciality: string;
   available: boolean;
   slots_booked: Record<string, string[]>;
-  speciality: string;
+  degree:string;
+  about:string;
+  expirence:string
+
 }
 
 interface Address {

@@ -51,7 +51,7 @@ const Navbar: React.FC = () => {
                 isActive ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-blue-600'
               }
             >
-              About
+              Admin
             </NavLink>
           </li>
           <li>
@@ -75,6 +75,8 @@ const Navbar: React.FC = () => {
             <p  onClick={()=>navigate('/profile')}className="hover:bg-gray-100 px-3 py-2 rounded-md cursor-pointer">My Profile</p>
             <p onClick={()=>navigate('/my-appointments')} className="hover:bg-gray-100 px-3 py-2 rounded-md cursor-pointer">My Appointments</p>
             <p onClick={()=>Logout()}  className="hover:bg-gray-100 px-3 py-2 rounded-md cursor-pointer">Logout</p>
+             <p onClick={()=>navigate('/appointment-history')} className="hover:bg-gray-100 px-3 py-2 rounded-md cursor-pointer">Appointment history</p>
+            
             </div>
           </div>
          </div>

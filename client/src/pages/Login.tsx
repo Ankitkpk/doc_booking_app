@@ -31,8 +31,6 @@ const Login: React.FC = () => {
         });
 
         if (response.data.success) {
-          setToken(response.data.token);
-          localStorage.setItem('atoken', response.data.token);
           toast.success("Account created successfully!");
         }
       } else {
@@ -54,12 +52,12 @@ const Login: React.FC = () => {
     }
   };
 
-  useEffect(() => {
+ useEffect(() => {
     if (token) {
       navigate('/'); 
     }
   }, [token]);
-
+  
   return (
     <form onSubmit={onSubmitHandler} className="min-h-[80vh] flex flex-col justify-center items-center p-6 gap-4">
       <div className="max-w-sm w-full bg-white rounded-lg shadow-2xl p-6 space-y-4">

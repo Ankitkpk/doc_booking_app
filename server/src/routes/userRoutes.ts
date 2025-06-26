@@ -12,6 +12,7 @@ router.post('/updateProfile', authUser, upload.single('image'),userController.up
 router.post('/BookAppointment',authUser,userController.BookAppointment);
 router.get('/getAppointments',authUser,userController.getAppointments);
 router.post('/cancelAppointment',authUser,userController.cancelAppointment);
+router.get('/getAppointment-history', authUser, userController.appointmentHistory);
 
 
 export default router;

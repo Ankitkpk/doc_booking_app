@@ -12,6 +12,7 @@ import Profile from './pages/Profile';
 import About from './pages/About';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import AppointmentHistory from './pages/AppointmentHistry';
 const App = () => {
   return (
     
@@ -24,6 +25,7 @@ const App = () => {
           <Route path='/doctors/:speciality' element={<Doctors/>}/>
           <Route path='/alldoctors' element={<Doctors/>}/>
           <Route path='/contact' element={<Contact/>}/>
+           <Route path='/appointment-history' element={<AppointmentHistory/>}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/About' element={<About/>}/>
           <Route path='/my-appointments' element={<MyAppointment/>}/>

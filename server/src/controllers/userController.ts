@@ -243,7 +243,7 @@ export const getAppointments = async (req: Request, res: Response): Promise<any>
       return res.status(400).json({ success: false, message: 'User ID is required' });
     }
 
-    const appointments = await Appointment.find({ userId })
+    const appointments = await Appointment.find({ userId, isCancelled:false })
       .populate({
         path:'docId',
         select:'image name speciality address createdAt'
@@ -295,6 +295,35 @@ const cancelAppointment = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+export const appointmentHistory = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const userId = req.userId; 
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+    const total = await Appointment.countDocuments();
+
+    const appointments = await Appointment.find({ userId})
+      .populate({
+        path: 'docId',
+        select: 'image name speciality address createdAt',
+      })
+      .sort({ date: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.status(200).json({
+      success: true,
+      total,
+      page,
+      pages: Math.ceil(total / limit),
+      data: appointments,
+    });
+  } catch (error) {
+    console.error('Error fetching appointment history:', error);
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
 
 
-export default { registerUser, LoginUser, getUserProfile, updateProfile,BookAppointment,getAppointments,cancelAppointment};
+export default { registerUser, LoginUser, getUserProfile, updateProfile,BookAppointment,getAppointments,cancelAppointment,appointmentHistory};

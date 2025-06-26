@@ -9,7 +9,7 @@ const SPECIALITIES = [
   'Dermatologist',
   'Pediatricians',
   'Neurologist',
-  'Gastroenterologist',
+  'Cardiologist',
 ];
 
 const Doctors: React.FC = () => {
@@ -51,7 +51,7 @@ const Doctors: React.FC = () => {
           </button>
         ))}
         <button
-          onClick={() => navigate('/doctors')}
+          onClick={() => navigate('/alldoctors')}
           className={`px-4 py-2 rounded-full border ${
             !speciality
               ? 'bg-blue-500 text-white'
@@ -66,7 +66,7 @@ const Doctors: React.FC = () => {
       {filterDoc.map((doctor, index) => (
         <div
           key={index}
-          className="flex flex-col items-center bg-white shadow-md rounded-xl overflow-hidden transition-transform transform hover:scale-105 hover:shadow-lg border border-gray-200 w-full max-w-xs cursor-pointer"
+          className="flex flex-col items-center bg-white shadow-md rounded-xl overflow-hidden transition-transform transform hover:scale-105 hover:shadow-lg border border-gray-200 w-full max-w-md cursor-pointer"
           onClick={() => navigate(`/appointment/${doctor._id}`)}
         >
           <div className="p-4 bg-blue-50 w-full flex justify-center">
