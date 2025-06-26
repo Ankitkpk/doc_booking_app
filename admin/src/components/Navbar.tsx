@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { assets } from '../assets/assets_admin/assets';
 import { useAdminContext } from '../hooks/useAdminContext';
@@ -11,7 +11,7 @@ const Navbar: React.FC = () => {
   const handleLogout = () => {
     navigate('/');
     localStorage.removeItem('token');
-    localStorage.removeItem('dtoken'); // optional
+    localStorage.removeItem('dtoken'); 
     setToken('');
     setDToken('');
   };
