@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDoctorContext } from '../../hooks/useDoctorContext';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+
 interface Doctor {
   _id: string;
   name: string;
@@ -37,10 +38,11 @@ const DoctorProfile: React.FC = () => {
     return <p className="text-center mt-10">Loading profile...</p>;
   }
 
-const handleFeesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+ const handleFeesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   const value = parseFloat(e.target.value);
   setProfileData((prev) => prev ? { ...prev, fees: value } : prev);
 };
+
   const handleAvailableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProfileData((prev) => ({ ...prev!, available: e.target.checked }));
   };
