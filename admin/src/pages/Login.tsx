@@ -22,8 +22,8 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { token , setToken, BackendUrl } = useAdminContext();
-  const { dtoken ,  setDToken } = useDoctorContext();
+  const { setToken, BackendUrl } = useAdminContext();
+  const { setDToken } = useDoctorContext();
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent) => {

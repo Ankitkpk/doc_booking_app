@@ -62,7 +62,10 @@ interface Doctor {
   name: string;
   email: string;
   phone: string;
-  address:Object;
+   address:{
+    line1:string,
+    line2:string
+  };
   image: string;
   fees: number;
   speciality: string;
@@ -195,7 +198,7 @@ const getProfileData = async () => {
 
     if (response.data.success) {
       toast.success(response.data.message);
-      setProfileData(response.data.doctor);
+      setProfileData(response.data.doctor as Doctor);
     } else {
       toast.error("Failed to fetch profile data.");
     }

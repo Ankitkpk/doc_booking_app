@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useDoctorContext } from '../../hooks/useDoctorContext';
-import { useAdminContext } from '../../hooks/useAdminContext';
 import { assets } from '../../assets/assets_admin/assets';
 
 const DoctorAppointment: React.FC = () => {

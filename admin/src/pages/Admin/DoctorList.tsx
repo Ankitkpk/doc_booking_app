@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useAdminContext } from '../../hooks/useAdminContext';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 
 const DoctorList: React.FC = () => {
-  const { BackendUrl,changeAvailability,doctors,setDoctors,loading,} = useAdminContext();
+  const { changeAvailability,doctors,loading} = useAdminContext();
   
  
   if (loading) {

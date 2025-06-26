@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { assets } from '../assets/assets_admin/assets';
-import { Menu, X } from 'lucide-react';
 import { useAdminContext } from '../hooks/useAdminContext';
 import { useDoctorContext } from '../hooks/useDoctorContext';
 
 const Navbar: React.FC = () => {
   const { token, setToken } = useAdminContext();
   const { dtoken, setDToken } = useDoctorContext(); 
-
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const navigate=useNavigate();
   const handleLogout = () => {
     navigate('/');
