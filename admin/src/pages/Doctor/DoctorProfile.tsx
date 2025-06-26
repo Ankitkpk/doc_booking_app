@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDoctorContext } from '../../hooks/useDoctorContext';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-
 interface Doctor {
   _id: string;
   name: string;
