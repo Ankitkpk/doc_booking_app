@@ -62,12 +62,15 @@ interface Doctor {
   name: string;
   email: string;
   phone: string;
-  address: string;
+  address:Object;
   image: string;
   fees: number;
-  specialization: string;
+  speciality: string;
   available: boolean;
-  // Add more fields as needed
+  degree:string;
+  about:string;
+  expirence:string
+
 }
 export const DoctorContext = createContext<DoctorContextType | undefined>(undefined);
 interface DoctorContextProviderProps {
@@ -201,6 +204,8 @@ const getProfileData = async () => {
     toast.error("Something went wrong while fetching the profile.");
   }
 };
+ 
+
   const value: DoctorContextType = {
     dtoken,
     setDToken,

@@ -21,7 +21,7 @@ const DoctorDashboard: React.FC = () => {
           <div className="flex items-center gap-3">
             <img src={assets.earning_icon} alt="Earning" className="w-16" />
             <div className="flex flex-col">
-              <p className="text-gray-600">Doctors</p>
+              <p className="text-gray-600">Earnings</p>
               <h2 className="text-2xl font-bold">{dashData?.earning}</h2>
             </div>
           </div>
@@ -59,7 +59,6 @@ const DoctorDashboard: React.FC = () => {
             <p>#</p>
             <p>Date & Time</p>
             <p>Patient</p>
-            <p>Doctor</p>
             <p>Fees</p>
             <p>Actions</p>
           </div>
@@ -86,12 +85,10 @@ const DoctorDashboard: React.FC = () => {
                   src={appointment.userData?.image}
                   alt={appointment.userData?.name || 'User'}
                 />
-                <p className="truncate">{appointment.userData?.name}</p>
+               <p className="whitespace-normal break-words break-all font-medium p-2 text-gray-700">
+               {appointment.userData?.name}
+               </p>
               </div>
-              <p>
-                <span className="sm:hidden font-medium text-gray-500">Doctor: </span>
-                {appointment.doctorData?.name || '-'}
-              </p>
               <p className="font-medium text-green-700">
                 <span className="sm:hidden font-medium text-gray-500">Fees: </span>
                 ₹{appointment.amount}

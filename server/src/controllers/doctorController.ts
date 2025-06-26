@@ -268,8 +268,8 @@ const getDoctorProfile = async (req: Request, res: Response): Promise<any> => {
 
 export const updateProfile = async (req: Request, res: Response): Promise<any> => {
   try {
-    const docId = req.docId; // assuming this comes from auth middleware
-    const { fees, address, available } = req.body;
+    const docId = req.docId;
+    const { fees, available } = req.body;
 
     if (!docId) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
@@ -279,7 +279,6 @@ export const updateProfile = async (req: Request, res: Response): Promise<any> =
       docId,
       {
         fees,
-        address,
         available
       },
       { new: true }
@@ -288,7 +287,7 @@ export const updateProfile = async (req: Request, res: Response): Promise<any> =
     if (!updatedDoctor) {
       return res.status(404).json({ success: false, message: "Doctor not found" });
     }
-
+   
     return res.status(200).json({
       success: true,
       message: "Profile updated successfully",
