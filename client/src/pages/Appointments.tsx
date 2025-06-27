@@ -224,7 +224,7 @@ const Appointments: React.FC = () => {
         )}
       </div>
 
-      <RelatedDoctor className="mb-20" docId={docId} speciality={doctInfo.speciality} />
+      <RelatedDoctor  docId={docId!} speciality={doctInfo.speciality}  />
     </div>
   );
 };
