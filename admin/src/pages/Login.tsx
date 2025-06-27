@@ -25,7 +25,7 @@ const Login: React.FC = () => {
   const { setToken, BackendUrl } = useAdminContext();
   const { setDToken } = useDoctorContext();
   const navigate = useNavigate();
-
+  console.log(BackendUrl);
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 

@@ -128,13 +128,31 @@ const adminLogin = async (req: Request, res: Response): Promise<any> => {
 
  const appointmentsAdmin = async (req: Request, res: Response): Promise<any> => {
   try {
-    const appointments = await Appointment.find({});
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+    const totalCount = await Appointment.countDocuments();
+    const totalPages = Math.ceil(totalCount / limit);
+
+    const appointments = await Appointment.find()
+      .sort({ createdAt: -1 }) 
+      .skip(skip)
+      .limit(limit);
+    console.log(appointments);
     return res.status(200).json({
       success: true,
       message: "Appointments fetched successfully",
-      appointments
+      data: {
+        pagination: {
+          currentPage: page,
+          totalPages,
+          hasNextPage: page < totalPages,
+          hasPrevPage: page > 1
+        },
+        appointments
+      }
     });
-
+   
   } catch (error: any) {
     console.error("Error in appointmentsAdmin:", error.message);
     return res.status(500).json({
@@ -144,6 +162,7 @@ const adminLogin = async (req: Request, res: Response): Promise<any> => {
     });
   }
 };
+
 
 const cancelAppointmentAdmin = async (req: Request, res: Response): Promise<any> => {
   try {

@@ -28,21 +28,27 @@ const Navbar: React.FC = () => {
 
         {/* Desktop Links */}
         <ul className="hidden md:flex space-x-6 items-center">
-          {['/', '/alldoctors', '/about', '/contact'].map((path, idx) => {
-            const labels = ['Home', 'All Doctors', 'Admin', 'Contact'];
-            return (
-              <li key={path}>
-                <NavLink
-                  to={path}
-                  className={({ isActive }) =>
-                    isActive ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-blue-600'
-                  }
-                >
-                  {labels[idx]}
-                </NavLink>
-              </li>
-            );
-          })}
+         <NavLink to="/" onClick={toggleMenu} className={({ isActive }) =>
+            isActive ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-blue-600'}>
+            Home
+          </NavLink>
+          <NavLink to="/alldoctors" onClick={toggleMenu} className={({ isActive }) =>
+            isActive ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-blue-600'}>
+            All Doctors
+          </NavLink>
+           <a
+           href="https://doc-booking-app-yz2o.vercel.app/"
+           onClick={toggleMenu}
+           className="text-gray-700 hover:text-blue-600"
+           target="_blank"
+           rel="noopener noreferrer"
+           >
+          Admin
+          </a>
+          <NavLink to="/contact" onClick={toggleMenu} className={({ isActive }) =>
+            isActive ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-blue-600'}>
+            Contact
+          </NavLink>
         </ul>
 
         {/* Desktop Profile / Login */}
@@ -86,10 +92,15 @@ const Navbar: React.FC = () => {
             isActive ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-blue-600'}>
             All Doctors
           </NavLink>
-          <NavLink to="/about" onClick={toggleMenu} className={({ isActive }) =>
-            isActive ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-blue-600'}>
-            Admin
-          </NavLink>
+           <a
+           href="https://doc-booking-app-yz2o.vercel.app/"
+           onClick={toggleMenu}
+           className="text-gray-700 hover:text-blue-600"
+           target="_blank"
+           rel="noopener noreferrer"
+           >
+          Admin
+          </a>
           <NavLink to="/contact" onClick={toggleMenu} className={({ isActive }) =>
             isActive ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-blue-600'}>
             Contact

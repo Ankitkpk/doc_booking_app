@@ -8,7 +8,7 @@ interface AdminContextType {
   setToken: React.Dispatch<React.SetStateAction<string>>;
   BackendUrl: string;
   changeAvailability: (docId: string) => Promise<void>;
-  getAdminappointments: () => Promise<void>;
+  getAdminappointments: (page?: number, limit?: number) => Promise<void>;
   cancelAppointment: (appointmentId: string) => Promise<void>;
   getAdminPanelData: () => Promise<void>;
   doctors: Doctor[];
@@ -19,6 +19,18 @@ interface AdminContextType {
   setAppointments: React.Dispatch<React.SetStateAction<Appointment[]>>;
   setDoctors: React.Dispatch<React.SetStateAction<Doctor[]>>;
   loading: boolean;
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  } | null;
+  setPagination: React.Dispatch<React.SetStateAction<{
+    currentPage: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  } | null>>;
 }
 
 interface ChangeAvailabilityResponse {
@@ -49,7 +61,16 @@ interface Doctor {
 interface AdminAppointmentsResponse {
   success: boolean;
   message: string;
-  appointments: Appointment[];
+  data: {
+    pagination: {
+      currentPage: number;
+      totalPages: number;
+      hasNextPage: boolean;
+      hasPrevPage: boolean;
+    };
+    appointments: Appointment[];
+  }
+ 
 }
 
 interface DoctorResponse {
@@ -84,6 +105,12 @@ const AdminContextProvider: React.FC<AdminContextProviderProps> = ({ children })
   const [totalDoctors, setTotalDoctors] = useState<number>(0);
   const [totalappointments, setTotalAppointments] = useState<number>(0);
   const [totalpatients, setTotalPatients] = useState<number>(0);
+  const [pagination, setPagination] = useState<{
+    currentPage: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  } | null>(null);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -127,22 +154,16 @@ const AdminContextProvider: React.FC<AdminContextProviderProps> = ({ children })
     }
   };
 
-  const getAdminappointments = async () => {
+  const getAdminappointments = async (page = 1, limit = 10) => {
     try {
-      const response = await axios.get<AdminAppointmentsResponse>(
-        `${BackendUrl}/api/admin/appointmentsAdmin`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      toast.success(response.data.message);
-      setAppointments(response.data.appointments);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to get admin appointments');
+      const res = await axios.get<AdminAppointmentsResponse>(`${BackendUrl}/api/admin/appointmentsAdmin?page=${page}&limit=${limit}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log(res.data.data.appointments);
+      setAppointments(res.data.data.appointments);
+      setPagination(res.data.data.pagination);
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
     }
   };
 
@@ -171,32 +192,28 @@ const AdminContextProvider: React.FC<AdminContextProviderProps> = ({ children })
     }
   };
 
- const getAdminPanelData = async () => {
-  try {
-    const response = await axios.get<AdminPanelResponse>(
-      `${BackendUrl}/api/admin/adminPanel`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+  const getAdminPanelData = async () => {
+    try {
+      const response = await axios.get<AdminPanelResponse>(
+        `${BackendUrl}/api/admin/adminPanel`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    const data = response.data.dashData;
-    console.log("Received doctors:", data.totalDoctors);
-
-    setTotalPatients(data.totalPatients);
-    setTotalAppointments(data.allAppointments.length);
-    setTotalDoctors(data.totalDoctors.length); 
-    setDoctors(data.totalDoctors);              
-    setAppointments(data.allAppointments);
-
-  } catch (error: any) {
-    console.error(error);
-  }
-};
-
+      const data = response.data.dashData;
+      setTotalPatients(data.totalPatients);
+      setTotalAppointments(data.allAppointments.length);
+      setTotalDoctors(data.totalDoctors.length);
+      setDoctors(data.totalDoctors);
+      setAppointments(data.allAppointments);
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
 
   const value: AdminContextType = {
     token,
@@ -213,6 +230,8 @@ const AdminContextProvider: React.FC<AdminContextProviderProps> = ({ children })
     totalDoctors,
     totalpatients,
     totalappointments,
+    pagination,
+    setPagination,
     getAdminPanelData,
   };
 
