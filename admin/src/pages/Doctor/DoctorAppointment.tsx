@@ -25,7 +25,7 @@ const DoctorAppointment: React.FC = () => {
 
   return (
     <div className="w-full max-w-6xl px-4 py-6">
-      <h1 className="mb-6 text-3xl font-bold text-center text-gray-800">All Appointments</h1>
+      <h1 className="mb-6 text-3xl font-bold text-center text-gray-800"> Appointments</h1>
 
       <div className="bg-white rounded-xl shadow-md text-sm max-h-[80vh] overflow-y-auto border border-gray-200">
         <div className="hidden sm:grid grid-cols-6 py-3 px-4 border-b font-semibold bg-gray-100 text-gray-700">
