@@ -235,10 +235,9 @@ const doctorDashboard = async (req: Request, res: Response): Promise<any> => {
     });
   }
 };
-//api to get doctor profile//
+
 const getDoctorProfile = async (req: Request, res: Response): Promise<any> => {
   const docId = req.docId;
-
   try {
     if (!docId) {
       return res.status(400).json({
