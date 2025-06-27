@@ -223,8 +223,9 @@ const Appointments: React.FC = () => {
           </>
         )}
       </div>
-
-      <RelatedDoctor  docId={docId!} speciality={doctInfo.speciality}  />
+      {docId && doctInfo.speciality && (
+     <RelatedDoctor  docId={docId} speciality={doctInfo.speciality} />
+      )}
     </div>
   );
 };
