@@ -171,7 +171,6 @@ const cancelAppointmentAdmin = async (req: Request, res: Response): Promise<any>
     if (!appointmentId) {
       return res.status(400).json({ success: false, message: "Appointment ID is required." });
     }
-
     const appointment = await Appointment.findById(appointmentId);
     if (!appointment) {
       return res.status(404).json({ success: false, message: "Appointment not found." });
@@ -179,8 +178,6 @@ const cancelAppointmentAdmin = async (req: Request, res: Response): Promise<any>
 
     appointment.isCancelled = true;
     await appointment.save();
-
-    // Free the booked slot in doctor's document once appointment is cancelled//
     const { docId, slotDate, slotTime } = appointment;
    
     await Doctor.findByIdAndUpdate(docId, {
