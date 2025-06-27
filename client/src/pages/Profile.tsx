@@ -9,7 +9,9 @@ interface UpdateProfileResponse {
   success: boolean;
   message: string;
   user: {
+    _id: string;
     name: string;
+    email: string;
     phone: string;
     gender: string;
     dob: string;
@@ -18,11 +20,8 @@ interface UpdateProfileResponse {
       line1: string;
       line2: string;
     };
-    
   };
 }
-
-
 
 
 
@@ -78,10 +77,10 @@ const Profile: React.FC = () => {
         setImage(null);
         toast.success(res.data.message);
       }
-    } catch (err) {
-      toast.error(err);
-    }
+    } catch (error) {
+      toast.error("Something went wrong while updating profile");
   };
+}
 
   return (
     <div className="flex flex-col mt-8 p-4">

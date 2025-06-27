@@ -43,7 +43,7 @@ const AppointmentCard: React.FC<{
   dateTime: string;
   image: string;
   isCancelled: boolean;
-}> = ({ doctor, specialty, address, dateTime, image, isCancelled }) => (
+}> = ({ doctor, specialty, address, dateTime, image}) => (
   <div className="flex flex-col items-center md:flex-row items-start gap-4 p-2">
     <div className="w-full sm:w-40 sm:h-40 bg-blue-100 flex items-center justify-center">
       <img src={image} alt={doctor} className="w-full h-full object-contain" />

@@ -5,14 +5,13 @@ import RelatedDoctor from '../components/RelatedDoctor';
 import { useAppContext } from '../hooks/useAppcontext';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { Types } from 'mongoose';
 
 interface AppointmentRequest {
   message: string;
   success: boolean;
   appointment: {
-    docId: Types.ObjectId;
-    userId: Types.ObjectId;
+    docId: string;
+    userId: string;
     slotTime: string;
     slotDate: string;
     userData: Record<string, any>;
