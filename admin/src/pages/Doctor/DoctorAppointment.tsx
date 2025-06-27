@@ -102,7 +102,7 @@ const DoctorAppointment: React.FC = () => {
             </div>
           ))
         ) : (
-          <div className="p-6 text-center text-gray-500">No appointments found.</div>
+          <div className="p-6 text-center text-gray-500">No appointments found for today.</div>
         )}
       </div>
     </div>

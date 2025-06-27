@@ -113,8 +113,13 @@ const doctorLogin = async (req: Request, res: Response): Promise<any> => {
         message: "Doctor ID missing from request.",
       });
     }
-
-    const appointments = await Appointment.find({ docId })
+    const today = new Date();
+   const startOfDay = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+   const endOfDay = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59, 999));
+    const appointments = await Appointment.find({ docId ,  createdAt: {
+    $gte: startOfDay,
+    $lte: endOfDay
+  }})
       .populate("userData", "name email image") 
       .sort({ slotDate: -1, slotTime: -1 });
 
