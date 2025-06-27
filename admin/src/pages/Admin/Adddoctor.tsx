@@ -183,9 +183,13 @@ const AddDoctor: React.FC = () => {
                 onChange={(e) => setSpeciality(e.target.value)}
               >
                 <option value="">Select Speciality</option>
-                <option value="cardiologist">Cardiologist</option>
-                <option value="dermatologist">Dermatologist</option>
-                <option value="general">General Physician</option>
+                <option value="General physician">General physician</option>
+                <option value="Gynecologist">Gynecologist</option>
+                <option value="Dermatologist">Dermatologist</option>
+                <option value="Dermatologist">Dermatologist</option>
+                <option value="Pediatricians">Pediatricians</option>
+                <option value="Neurologist">Neurologist</option>
+                <option value="Cardiologist">Cardiologist</option>
               </select>
             </div>
             <div>
