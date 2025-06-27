@@ -19,16 +19,13 @@ cloudinary.config({
 
 const app = express();
 
-const allowedOrigins = process.env.CORS_ORIGIN?.split(',') || [];
+const allowedOrigins: (string | RegExp)[] = [
+  process.env.CLIENT_LINK,
+  process.env.ADMIN_LINK,
+].filter((origin): origin is string => Boolean(origin)); 
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: allowedOrigins,
   credentials: true,
 }));
 app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }));
