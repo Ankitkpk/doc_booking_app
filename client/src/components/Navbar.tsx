@@ -37,7 +37,7 @@ const Navbar: React.FC = () => {
             All Doctors
           </NavLink>
            <a
-           href="https://doc-booking-app-a7ah.vercel.app/"
+           href="https://doc-booking-app-9am8.vercel.app/"
            onClick={toggleMenu}
            className="text-gray-700 hover:text-blue-600"
            target="_blank"
@@ -93,7 +93,7 @@ const Navbar: React.FC = () => {
             All Doctors
           </NavLink>
            <a
-           href="https://doc-booking-app-a7ah.vercel.app/"
+           href="https://doc-booking-app-9am8.vercel.app/"
            onClick={toggleMenu}
            className="text-gray-700 hover:text-blue-600"
            target="_blank"
